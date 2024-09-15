@@ -29,17 +29,20 @@ aws iam attach-user-policy --user-name GH-AdminUser --policy-arn arn:aws:iam::aw
 
 # Get the AWS account ID first
 export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-# Create access key for the user
-export access_key=$(aws iam create-access-key --user-name GH-AdminUser --query 'AccessKey.[AccessKeyId]' --output text)
-export secret_access_key=$(aws iam create-access-key --user-name GH-AdminUser --query 'AccessKey.[SecretAccessKey]' --output text)
+# Create access key for the user and extract both ID and secret
+access_key_output=$(aws iam create-access-key --user-name GH-AdminUser --query 'AccessKey.[AccessKeyId,SecretAccessKey]' --output text)
+access_key=$(echo "$access_key_output" | awk '{print $1}')
+secret_access_key=$(echo "$access_key_output" | awk '{print $2}')
+aws_region=$(aws configure get region)
 
 # Add the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY to the GitHub repository secrets
-gh secret set AWS_ACCESS_KEY_ID --body "$access_key"
-gh secret set AWS_SECRET_ACCESS_KEY --body "$secret_access_key"
-gh secret set AWS_ACCOUNT_ID --body "$AWS_ACCOUNT_ID"
+gh secret set AWS_ACCESS_KEY_ID --body $access_key
+gh secret set AWS_SECRET_ACCESS_KEY --body $secret_access_key
+gh secret set AWS_ACCOUNT_ID --body $AWS_ACCOUNT_ID
 
 # Add the AWS_REGION to the GitHub repository secrets
-gh secret set AWS_REGION --body "us-east-1"
+gh secret set AWS_REGION --body $aws_region
+
 
 # Add the ECR_REPOSITORY to the GitHub repository secrets
 gh secret set ECR_REPOSITORY --body "nextjs14-ecr-repo"
