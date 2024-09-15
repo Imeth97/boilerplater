@@ -22,11 +22,12 @@ jobs:
       - name: Print secrets for testing
         run: |
           # print out secrets for test
-          echo "AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}} | sed 's/./& /g'"
-          echo "AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}} | sed 's/./& /g'"
-          echo "AWS_REGION: ${{secrets.AWS_REGION}} | sed 's/./& /g'"
-          echo "ECR_REPOSITORY: ${{secrets.ECR_REPOSITORY}} | sed 's/./& /g'"
-          echo "AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}} | sed 's/./& /g'"
+          echo "AWS_ACCESS_KEY_ID:" 
+          echo ${{secrets.AWS_ACCESS_KEY_ID}} | sed 's/./& /g'
+          echo "AWS_SECRET_ACCESS_KEY:"
+          echo ${{secrets.AWS_SECRET_ACCESS_KEY}} | sed 's/./& /g'
+          echo "AWS_REGION:"
+          echo ${{secrets.AWS_REGION}} | sed 's/./& /g'
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
