@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LoginBtn } from "../auth/Auth";
 
 function isUserAuthenticated() {
   // Dummy authentication function
@@ -26,18 +27,23 @@ const Navbar: React.FC = () => {
         </Link>
 
         {/* Navigation Links for Desktop */}
-        <nav className='hidden md:flex space-x-6'>
-          <Link href='/about' className='text-gray-700 hover:text-gray-900'>
+        <nav className='hidden md:flex items-center space-x-6'>
+          <Link
+            href='/about'
+            className='text-gray-700 hover:text-gray-900 transition-colors text-base'
+          >
             About
           </Link>
           {isAuthenticated ? (
-            <button className='text-gray-700 hover:text-gray-900'>
+            <button className='text-gray-700 hover:text-gray-900 transition-colors text-base'>
               Sign Out
             </button>
           ) : (
-            <Link href='/login' className='text-gray-700 hover:text-gray-900'>
-              Login/Signup
-            </Link>
+            <LoginBtn
+              label='Login/Signup'
+              variant='ghost'
+              className='text-gray-700 hover:text-gray-900 transition-colors p-0 h-auto text-base font-normal'
+            />
           )}
         </nav>
 
