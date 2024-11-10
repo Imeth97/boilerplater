@@ -9,21 +9,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LoginBtn } from "../auth/Auth";
+import { auth } from "../auth";
+import { SignOutBtn } from "../auth/Auth";
 
-function isUserAuthenticated() {
-  // Dummy authentication function
-  return false; // Change to true to simulate an authenticated user
+async function isUserAuthenticated() {
+  const session = await auth();
+
+  return session?.user ? true : false;
 }
 
-const Navbar: React.FC = () => {
-  const isAuthenticated = isUserAuthenticated();
+
+
+const Navbar: React.FC = async () => {
+  const isAuthenticated = await isUserAuthenticated();
 
   return (
     <header className='sticky top-0 z-40 w-full border-b bg-white'>
       <div className='container mx-auto flex h-16 items-center justify-between px-4'>
         {/* Logo or Site Name */}
         <Link href='/'>
-          <span className='text-xl font-semibold'>MyApp</span>
+          <span className='text-xl text-black font-semibold'>MyApp</span>
         </Link>
 
         {/* Navigation Links for Desktop */}
@@ -35,9 +40,7 @@ const Navbar: React.FC = () => {
             About
           </Link>
           {isAuthenticated ? (
-            <button className='text-gray-700 hover:text-gray-900 transition-colors text-base'>
-              Sign Out
-            </button>
+            <SignOutBtn />
           ) : (
             <LoginBtn
               label='Login/Signup'

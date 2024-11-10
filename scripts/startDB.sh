@@ -10,7 +10,11 @@ POSTGRES_IMAGE="postgres:$POSTGRES_VERSION"
 
 # Check if Docker is running
 if ! docker info > /dev/null 2>&1; then
-    echo "Docker is not running. Please start Docker and try again."
+    echo -e "\n❌❌❌ ERROR ❌❌❌"
+    echo -e "===================================="
+    echo -e "🐳 Docker is not running!"
+    echo -e "   Please start Docker and try again."
+    echo -e "====================================\n"
     exit 1
 fi
 
@@ -44,13 +48,28 @@ done
 
 DATABASE_URL="postgresql://$DB_USER:$DB_PASSWORD@localhost:8080/$DB_NAME"
 
+# if the --re-seed flag is passed, then run the seed script
+if [ "$1" == "--re-seed" ]; then
+    echo "Re-seeding the database..."
+    DATABASE_URL=$DATABASE_URL npx drizzle-kit seed
+fi
+
 # Run migrations
 DATABASE_URL=$DATABASE_URL npx drizzle-kit generate
 
 # Apply migrations from ./drizzle
 DATABASE_URL=$DATABASE_URL npx drizzle-kit migrate
 
+# Add decorative lines and emojis
+echo -e "\n=========================================="
+echo -e "🎉 PostgreSQL Setup Complete! 🎉"
+echo -e "==========================================\n"
 
+echo "🐘 PostgreSQL container is ready."
+echo "📊 Local database '$DB_NAME' is accessible with user '$DB_USER'."
+echo -e "\n🔗 Connection Details:"
+echo "   Host: localhost"
+echo "   Port: 8080"
+echo -e "   Database URL: $DATABASE_URL\n"
 
-echo "PostgreSQL container is ready. Database '$DB_NAME' is accessible with user '$DB_USER'."
-echo "You can connect to it on localhost:8080 using the database URL: $DATABASE_URL"
+echo -e "==========================================\n"

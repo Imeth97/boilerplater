@@ -10,7 +10,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
 import {
   Form,
   FormControl,
@@ -23,6 +22,11 @@ import {
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Input } from "../ui/input";
+import Login from "@/components/auth/Login";
+import Signup from "@/components/auth/Signup";
+import { useRouter } from "next/navigation";
+import { signOut } from ".";
+import { Logout } from "./Logout";
 
 const loginFormSchema = z.object({
   email: z.string().email({
@@ -42,18 +46,20 @@ function EmailSignInForm() {
     resolver: zodResolver(loginFormSchema),
   });
 
+  const router = useRouter();
+
   // 2. Define a submit handler.
   async function onSubmitSignIn(values: z.infer<typeof loginFormSchema>) {
-    // // Do something with the form values.
-    // // ✅ This will be type-safe and validated.
-    // setPending(true);
-    // const res = await Login(values.email, values.password);
-    // if (res?.error) {
-    //   setPending(false);
-    //   setError(true);
-    //   return;
-    // }
-    // return;
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    setPending(true);
+    const res = await Login(values.email, values.password);
+    if (!res.success) {
+      setPending(false);
+      setError(true);
+      return;
+    }
+    router.push("/dashboard");
   }
 
   return (
@@ -246,17 +252,17 @@ function EmailSignUpForm() {
 
   // 2. Define a submit handler.
   async function onSubmitSignIn(values: z.infer<typeof signupFormSchema>) {
-    // // Do something with the form values.
-    // // ✅ This will be type-safe and validated.
-    // setPending(true);
-    // const res = await SignUp(values.email, values.password, values.name);
-    // if (res?.error) {
-    //   setPending(false);
-    //   setError(true);
-    //   return;
-    // }
-    // setSuccess(true);
-    // return;
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    setPending(true);
+    const res = await Signup(values.email, values.password, values.name);
+    if (!res.success) {
+      setPending(false);
+      setError(true);
+      return;
+    }
+    setSuccess(true);
+    return;
   }
 
   if (success) {
@@ -467,4 +473,20 @@ export const LoginBtn = ({
       </DialogContent>
     </Dialog>
   );
+};
+
+export const SignOutBtn = () => {
+  const [isPending, setIsPending] = useState<boolean>(false);
+
+
+  async function handleSignOut() {
+    setIsPending(true);
+    await Logout();
+  }
+
+  if (isPending) {
+    return <Loader2 className='h-8 w-8 animate-spin text-slate-300' />;
+  }
+
+  return <button onClick={handleSignOut}>Sign Out</button>;
 };
