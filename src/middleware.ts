@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
+import { auth } from "./components/auth";
 
 // Routes that don't require authentication
 export const NO_AUTH_ROUTES = ["/"];
@@ -9,12 +9,12 @@ export const NO_AUTH_ROUTES = ["/"];
 export async function middleware(req: NextRequest) {
   try {
     // Attempt to get the token from the request using NextAuth's getToken
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const session = await auth();
     const path = req.nextUrl.pathname;
     // Check if the current path is in NO_AUTH_ROUTES
     const isPublicPath = NO_AUTH_ROUTES.includes(path);
 
-    if (!isPublicPath && !token) {
+    if (!isPublicPath && !session) {
       // User is not authenticated, redirect to the login page
       return NextResponse.redirect(new URL("/", req.url));
     }

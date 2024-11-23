@@ -20,10 +20,28 @@
     preact "10.11.3"
     preact-render-to-string "5.2.3"
 
-"@drizzle-team/brocli@^0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@drizzle-team/brocli/-/brocli-0.10.1.tgz#8b73d65eaf2f6d04f45718ea6f4d789d69526cd3"
-  integrity sha512-AHy0vjc+n/4w/8Mif+w86qpppHuF3AyXbcWW+R/W7GNA3F5/p2nuhlkCJaTXSLZheB4l1rtHzOfr9A7NwoR/Zg==
+"@auth/core@0.37.4":
+  version "0.37.4"
+  resolved "https://registry.yarnpkg.com/@auth/core/-/core-0.37.4.tgz#c51410aa7d0997fa22a07a196d2c21c8b1bca71b"
+  integrity sha512-HOXJwXWXQRhbBDHlMU0K/6FT1v+wjtzdKhsNg0ZN7/gne6XPsIrjZ4daMcFnbq0Z/vsAbYBinQhhua0d77v7qw==
+  dependencies:
+    "@panva/hkdf" "^1.2.1"
+    jose "^5.9.6"
+    oauth4webapi "^3.1.1"
+    preact "10.24.3"
+    preact-render-to-string "6.5.11"
+
+"@auth/drizzle-adapter@^1.7.4":
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/@auth/drizzle-adapter/-/drizzle-adapter-1.7.4.tgz#6b93466ce6720f17103ee54f849181f903fccde3"
+  integrity sha512-OPZQakWWm5Hbx6okVMbtgI08WBliz/dCbFUXiPg9TThpp3Wh7MME/ubg4fW1oOp8P0gul6MkFvMVO733sVtd2w==
+  dependencies:
+    "@auth/core" "0.37.4"
+
+"@drizzle-team/brocli@^0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@drizzle-team/brocli/-/brocli-0.10.2.tgz#9757c006a43daaa6f45512e6cf5fabed36fb9da7"
+  integrity sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==
 
 "@esbuild-kit/core-utils@^3.3.2":
   version "3.3.2"
@@ -1419,20 +1437,20 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-drizzle-kit@^0.24.2:
-  version "0.24.2"
-  resolved "https://registry.yarnpkg.com/drizzle-kit/-/drizzle-kit-0.24.2.tgz#928a56a6a2bec1c5725321f559ec51dc5a943412"
-  integrity sha512-nXOaTSFiuIaTMhS8WJC2d4EBeIcN9OSt2A2cyFbQYBAZbi7lRsVGJNqDpEwPqYfJz38yxbY/UtbvBBahBfnExQ==
+drizzle-kit@^0.28.1:
+  version "0.28.1"
+  resolved "https://registry.yarnpkg.com/drizzle-kit/-/drizzle-kit-0.28.1.tgz#8bb92aa99319446b7158769ec605788f8fa23504"
+  integrity sha512-JimOV+ystXTWMgZkLHYHf2w3oS28hxiH1FR0dkmJLc7GHzdGJoJAQtQS5DRppnabsRZwE2U1F6CuezVBgmsBBQ==
   dependencies:
-    "@drizzle-team/brocli" "^0.10.1"
+    "@drizzle-team/brocli" "^0.10.2"
     "@esbuild-kit/esm-loader" "^2.5.5"
     esbuild "^0.19.7"
     esbuild-register "^3.5.0"
 
-drizzle-orm@^0.33.0:
-  version "0.33.0"
-  resolved "https://registry.yarnpkg.com/drizzle-orm/-/drizzle-orm-0.33.0.tgz#ece81e3e85f7559b5f7c01fc09e654e9a2f087fe"
-  integrity sha512-SHy72R2Rdkz0LEq0PSG/IdvnT3nGiWuRk+2tXZQ90GVq/XQhpCzu/EFT3V2rox+w8MlkBQxifF8pCStNYnERfA==
+drizzle-orm@^0.36.4:
+  version "0.36.4"
+  resolved "https://registry.yarnpkg.com/drizzle-orm/-/drizzle-orm-0.36.4.tgz#f296848e94534f318cba4cfa56634694c14742ca"
+  integrity sha512-1OZY3PXD7BR00Gl61UUOFihslDldfH4NFRH2MbP54Yxi0G/PKn4HfO65JYZ7c16DeP3SpM3Aw+VXVG9j6CRSXA==
 
 eastasianwidth@^0.2.0:
   version "0.2.0"
@@ -2436,7 +2454,7 @@ jiti@^1.21.0:
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-1.21.6.tgz#6c7f7398dd4b3142767f9a168af2f317a428d268"
   integrity sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==
 
-jose@^5.9.3:
+jose@^5.9.3, jose@^5.9.6:
   version "5.9.6"
   resolved "https://registry.yarnpkg.com/jose/-/jose-5.9.6.tgz#77f1f901d88ebdc405e57cce08d2a91f47521883"
   integrity sha512-AMlnetc9+CV9asI19zHmrgS/WYsWUwCn2R7RzlbJWD7F9eWYUTGyBmU9o6PxngtLGOiDGPRu+Uc4fhKzbpteZQ==
@@ -2673,6 +2691,11 @@ oauth4webapi@^3.0.0:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/oauth4webapi/-/oauth4webapi-3.1.2.tgz#f14d9f50c045d9e1091b610b6994a5b113e98dc6"
   integrity sha512-KQZkNU+xn02lWrFu5Vjqg9E81yPtDSxUZorRHlLWVoojD+H/0GFbH59kcnz5Thdjj7c4/mYMBPj/mhvGe/kKXA==
+
+oauth4webapi@^3.1.1:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/oauth4webapi/-/oauth4webapi-3.1.3.tgz#0a454659da37cbf0c5839a2963277ce2cc5c4b44"
+  integrity sha512-dik5wEMdFL5p3JlijYvM7wMNCgaPhblLIDCZtdXcaZp5wgu5Iwmsu7lMzgFhIDTi5d0BJo03LVoOoFQvXMeOeQ==
 
 object-assign@^4.0.1, object-assign@^4.1.1:
   version "4.1.1"
@@ -3049,10 +3072,20 @@ preact-render-to-string@5.2.3:
   dependencies:
     pretty-format "^3.8.0"
 
+preact-render-to-string@6.5.11:
+  version "6.5.11"
+  resolved "https://registry.yarnpkg.com/preact-render-to-string/-/preact-render-to-string-6.5.11.tgz#467e69908a453497bb93d4d1fc35fb749a78e027"
+  integrity sha512-ubnauqoGczeGISiOh6RjX0/cdaF8v/oDXIjO85XALCQjwQP+SB4RDXXtvZ6yTYSjG+PC1QRP2AhPgCEsM2EvUw==
+
 preact@10.11.3:
   version "10.11.3"
   resolved "https://registry.yarnpkg.com/preact/-/preact-10.11.3.tgz#8a7e4ba19d3992c488b0785afcc0f8aa13c78d19"
   integrity sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==
+
+preact@10.24.3:
+  version "10.24.3"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.24.3.tgz#086386bd47071e3b45410ef20844c21e23828f64"
+  integrity sha512-Z2dPnBnMUfyQfSQ+GBdsGa16hz35YmLmtTLhM169uW944hYL6xzTYkJjC07j+Wosz733pMWx0fgON3JNw1jJQA==
 
 prelude-ls@^1.2.1:
   version "1.2.1"
@@ -3679,6 +3712,11 @@ util-deprecate@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
+
+uuid@^11.0.3:
+  version "11.0.3"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-11.0.3.tgz#248451cac9d1a4a4128033e765d137e2b2c49a3d"
+  integrity sha512-d0z310fCWv5dJwnX1Y/MncBAqGMKEzlBb1AOf7z9K8ALnd0utBX/msg/fA0+sbyN1ihbMsLhrBlnl1ak7Wa0rg==
 
 which-boxed-primitive@^1.0.2:
   version "1.0.2"
