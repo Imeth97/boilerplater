@@ -1,7 +1,7 @@
 "use server";
 import db from "@/db/db";
 import { users } from "@/db/schema";
-import argon2 from "argon2";
+import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { AuthResponse } from "./typings/auth";
 
@@ -16,7 +16,7 @@ async function Signup(
   if (existingUser) {
     return { success: false, error: "User already exists" };
   }
-  const hashedPassword = await argon2.hash(password);
+  const hashedPassword = await bcrypt.hash(password, 10);
   const user = await db
     .insert(users)
     .values({

@@ -25,7 +25,6 @@ import { Input } from "../ui/input";
 import Login from "@/components/auth/Login";
 import Signup from "@/components/auth/Signup";
 import { useRouter } from "next/navigation";
-import { signOut } from ".";
 import { Logout } from "./Logout";
 
 const loginFormSchema = z.object({

@@ -1,5 +1,9 @@
+import db from "@/db/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import NextAuth, { User, NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 
 export const BASE_PATH = "/api/auth";
 
@@ -16,30 +20,29 @@ const authOptions: NextAuthConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials): Promise<User | null> {
-        const users = [
-          {
-            id: "test-user-1",
-            userName: "test1",
-            name: "Test 1",
-            password: "passpass",
-            email: "test1@donotreply.com",
-          },
-          {
-            id: "test-user-2",
-            userName: "test2",
-            name: "Test 2",
-            password: "pass",
-            email: "test2@donotreply.com",
-          },
-        ];
-        const user = users.find(
-          (user) =>
-            user.email === credentials.email &&
-            user.password === credentials.password
+        const { email, password } = credentials;
+
+        if (!email || !password) {
+          return null;
+        }
+
+        const user = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, email as string))
+          .limit(1)
+          .then((rows) => rows[0] ?? null);
+
+        const passwordsMatch = await bcrypt.compare(
+          password as string,
+          user?.password ?? ""
         );
-        return user
-          ? { id: user.id, name: user.name, email: user.email }
-          : null;
+
+        if (passwordsMatch) {
+          return user ?? null;
+        }
+
+        return null;
       },
     }),
   ],

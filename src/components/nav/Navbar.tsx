@@ -39,6 +39,7 @@ const Navbar: React.FC = async () => {
           >
             About
           </Link>
+          {isAuthenticated && <Link href='/dashboard'>Dashboard</Link>}
           {isAuthenticated ? (
             <SignOutBtn />
           ) : (
@@ -62,6 +63,10 @@ const Navbar: React.FC = async () => {
               <DropdownMenuItem asChild>
                 <Link href='/about'>About</Link>
               </DropdownMenuItem>
+              {isAuthenticated && 
+              <DropdownMenuItem asChild>
+                <Link href='/dashboard'>Dashboard</Link>
+                </DropdownMenuItem>}
               {isAuthenticated ? (
                 <DropdownMenuItem>
                   <button>Sign Out</button>
