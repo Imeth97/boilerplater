@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { checkAuth } from "./components/auth/utils";
 
 // Routes that don't require authentication
-export const NO_AUTH_ROUTES = ["/"];
+export const NO_AUTH_ROUTES = ["/", "/login"];
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(req: NextRequest) {
