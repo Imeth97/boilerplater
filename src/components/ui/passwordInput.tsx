@@ -3,7 +3,7 @@ import { memo, useRef, useState } from "react";
 import { Button } from "./button";
 import { Input, InputProps } from "./input";
 
-const PasswordInputField = memo(({ ...props }: InputProps) => {
+const PasswordInputField = ({ ...props }: InputProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null); // Reference to the input field
 
@@ -29,6 +29,7 @@ const PasswordInputField = memo(({ ...props }: InputProps) => {
         className="h-full absolute inset-y-0 right-0 flex items-center px-3"
         onClick={togglePasswordVisibility}
         aria-label={showPassword ? "Hide password" : "Show password"}
+        type="button"
       >
         {showPassword ? (
           <Eye className="h-5 w-5" />
@@ -38,6 +39,6 @@ const PasswordInputField = memo(({ ...props }: InputProps) => {
       </Button>
     </div>
   );
-});
+};
 
-export default PasswordInputField;
+export default memo(PasswordInputField);

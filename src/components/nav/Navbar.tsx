@@ -1,79 +1,72 @@
-import React from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LoginBtn } from "../auth/Auth";
+import { Menu } from "lucide-react";
+import Link from "next/link";
+import React from "react";
 import { auth } from "../auth";
-import { SignOutBtn } from "../auth/Auth";
-
-async function isUserAuthenticated() {
-  const session = await auth();
-
-  return session?.user ? true : false;
-}
-
-
+import { LoginBtn, SignOutBtn } from "../auth/Auth";
 
 const Navbar: React.FC = async () => {
-  const isAuthenticated = await isUserAuthenticated();
+  const session = await auth();
+  const isAuthenticated = !!session?.user;
 
   return (
-    <header className='sticky top-0 z-40 w-full border-b bg-white'>
-      <div className='container mx-auto flex h-16 items-center justify-between px-4'>
+    <header className="sticky top-0 z-40 w-full border-b bg-white">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo or Site Name */}
-        <Link href='/'>
-          <span className='text-xl text-black font-semibold'>MyApp</span>
+        <Link href="/">
+          <span className="text-xl text-black font-semibold">MyApp</span>
         </Link>
 
         {/* Navigation Links for Desktop */}
-        <nav className='hidden md:flex items-center space-x-6'>
+        <nav className="hidden md:flex items-center space-x-6">
           <Link
-            href='/about'
-            className='text-gray-700 hover:text-gray-900 transition-colors text-base'
+            href="/about"
+            className="text-gray-700 hover:text-gray-900 transition-colors text-base"
           >
             About
           </Link>
-          {isAuthenticated && <Link href='/dashboard'>Dashboard</Link>}
+          {isAuthenticated && <Link href="/dashboard">Dashboard</Link>}
           {isAuthenticated ? (
             <SignOutBtn />
           ) : (
             <LoginBtn
-              label='Login/Signup'
-              variant='ghost'
-              className='text-gray-700 hover:text-gray-900 transition-colors p-0 h-auto text-base font-normal'
+              label="Login/Signup"
+              variant="ghost"
+              className="text-gray-700 hover:text-gray-900 transition-colors p-0 h-auto text-base font-normal"
             />
           )}
         </nav>
 
         {/* Mobile Menu */}
-        <div className='md:hidden'>
+        <div className="md:hidden">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant='ghost' size='icon'>
-                <Menu className='h-6 w-6' />
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align='end' sideOffset={8}>
+            <DropdownMenuContent align="end" sideOffset={8}>
               <DropdownMenuItem asChild>
-                <Link href='/about'>About</Link>
+                <Link href="/about">About</Link>
               </DropdownMenuItem>
-              {isAuthenticated && 
-              <DropdownMenuItem asChild>
-                <Link href='/dashboard'>Dashboard</Link>
-                </DropdownMenuItem>}
+              {isAuthenticated && (
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard">Dashboard</Link>
+                </DropdownMenuItem>
+              )}
               {isAuthenticated ? (
                 <DropdownMenuItem>
-                  <button>Sign Out</button>
+                  <SignOutBtn />
                 </DropdownMenuItem>
               ) : (
                 <DropdownMenuItem asChild>
-                  <Link href='/login'>Login/Signup</Link>
+                  <Link href="/login">Login/Signup</Link>
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>

@@ -4,7 +4,7 @@ import { Button, ButtonVariants } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { ArrowLeftIcon, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -145,13 +145,13 @@ function EmailResetForm() {
     resolver: zodResolver(resetFormSchema),
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [error, setError] = useState(false);
+  // const [success, setSuccess] = useState(false);
 
   //   const supabase = createClientComponentClient();
 
-  async function onSubmit(values: z.infer<typeof resetFormSchema>) {
+  async function onSubmit() {
     // const { email } = values;
     // const baseUrl = getBaseUrl();
     // // Send a password reset email
@@ -168,19 +168,21 @@ function EmailResetForm() {
     // setSuccess(true);
   }
 
-  if (success) {
-    return (
-      <div className="flex flex-col justify-center text-center">
-        <p>Password reset email sent</p>
-        <p>Please check your email for a link to reset your password.</p>
-      </div>
-    );
-  }
+  // if (success) {
+  //   return (
+  //     <div className="flex flex-col justify-center text-center">
+  //       <p>Password reset email sent</p>
+  //       <p>Please check your email for a link to reset your password.</p>
+  //     </div>
+  //   );
+  // }
+
+  const isLoading = false;
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {error && (
+        {/* {error && (
           <Alert variant="destructive">
             <ExclamationTriangleIcon className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
@@ -196,7 +198,7 @@ function EmailResetForm() {
               for support.
             </AlertDescription>
           </Alert>
-        )}
+        )} */}
         <FormField
           control={form.control}
           name="email"
@@ -353,6 +355,22 @@ function EmailSignUpForm() {
   );
 }
 
+const DirectionalText = ({
+  formType,
+}: {
+  formType: "signIn" | "signUp" | "reset";
+}) => {
+  if (["signUp", "reset"].includes(formType)) {
+    return (
+      <Button variant="link" className="mt-3 w-full text-center">
+        <ArrowLeftIcon className="h-4 w-4" />
+        Back to sign in
+      </Button>
+    );
+  }
+  return <div>Forgotten your password?</div>;
+};
+
 function LoginForm() {
   const [formType, setFormType] = useState<"signIn" | "signUp" | "reset">(
     "signIn"
@@ -392,9 +410,7 @@ function LoginForm() {
           }
         }}
       >
-        {["signUp", "reset"].includes(formType)
-          ? "<- Back to sign in"
-          : "Forgotten your password?"}
+        <DirectionalText formType={formType} />
       </Button>
 
       {formType === "signIn" && (
@@ -464,6 +480,7 @@ export const SignOutBtn = () => {
   const [isPending, setIsPending] = useState<boolean>(false);
 
   async function handleSignOut() {
+    console.log("signing out");
     setIsPending(true);
     await Logout();
   }

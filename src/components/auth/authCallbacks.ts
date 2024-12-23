@@ -1,6 +1,4 @@
-interface AuthCallbacks {
-  jwt: (params: { token: any; account: any }) => Promise<any>;
-}
+import { NextAuthConfig } from "next-auth";
 
 export default {
   async jwt({ token, account }) {
@@ -9,4 +7,4 @@ export default {
     }
     return token;
   },
-} as AuthCallbacks;
+} as NextAuthConfig["callbacks"];

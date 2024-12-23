@@ -8,13 +8,14 @@ const Login = async (
   password?: string
 ): Promise<AuthResponse> => {
   try {
-    const res = await signIn("credentials", {
+    await signIn("credentials", {
       redirect: false,
       email: email ?? "",
       password: password ?? "",
     });
     return { success: true };
   } catch (error) {
+    console.log(error);
     return { success: false };
   }
 };
