@@ -21,18 +21,12 @@ Boilerplater is a Next.js-based project designed to streamline the setup of auth
   - Fully connected to manage users and session data.
   - [Drizzle ORM Documentation](https://orm.drizzle.team/)
 
-- **UI Components**:
+- **UI**:
 
   - Fully integrated with Shadcn/UI. [Shadcn/UI](https://ui.shadcn.com/)
   - Lucide Icons. [Lucide Icons](https://lucide.dev/)
-
-- **Tailwind CSS**
-
-  - Easy inline styling. [Tailwind CSS](https://tailwindcss.com/)
-
-- **React Hook Form**
-
-  - Easy form handling. [React Hook Form](https://react-hook-form.com/)
+  - Easy inline styling with Tailwind CSS. [Tailwind CSS](https://tailwindcss.com/)
+  - Easy form handling with React Hook Form. [React Hook Form](https://react-hook-form.com/)
 
 - **Zod**
   - Easy form & api validation. [Zod](https://zod.dev/)
