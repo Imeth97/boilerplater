@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { Button, ButtonVariants } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import Login from "@/components/auth/Login";
+import Signup from "@/components/auth/Signup";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Form,
@@ -21,10 +23,9 @@ import {
 } from "@/components/ui/form";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import { Input } from "../ui/input";
-import Login from "@/components/auth/Login";
-import Signup from "@/components/auth/Signup";
 import { useRouter } from "next/navigation";
+import { Input } from "../ui/input";
+import PasswordInputField from "../ui/passwordInput";
 import { Logout } from "./Logout";
 
 const loginFormSchema = z.object({
@@ -65,18 +66,19 @@ function EmailSignInForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmitSignIn)}
-        method='post'
-        className='space-y-8'
+        method="post"
+        className="space-y-8"
       >
         {error && (
-          <Alert variant='destructive' className='max-w-full'>
-            <ExclamationTriangleIcon className='h-4 w-4' />
+          <Alert variant="destructive" className="max-w-full">
+            <ExclamationTriangleIcon className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>
-              There was an issue authenticating you. Please try again later or{" "}
+              There was an issue authenticating you. Please double check your
+              email and password and try again later or{" "}
               <Link
                 href={"/contact-us"}
-                className='underline hover:text-stone-600'
+                className="underline hover:text-stone-600"
               >
                 contact us
               </Link>{" "}
@@ -86,12 +88,12 @@ function EmailSignInForm() {
         )}
         <FormField
           control={form.control}
-          name='email'
+          name="email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input {...field} autoComplete='email' />
+                <Input {...field} autoComplete="email" />
               </FormControl>
               <FormDescription>
                 Your personal valid email address.
@@ -102,26 +104,22 @@ function EmailSignInForm() {
         />
         <FormField
           control={form.control}
-          name='password'
+          name="password"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type='password'
-                  autoComplete='current-password'
-                />
+                <PasswordInputField {...field} />
               </FormControl>
               <FormDescription>A secure password.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <div className='flex flex-col mx-12'>
-          <Button className='my-3' type='submit'>
+        <div className="flex flex-col mx-12">
+          <Button className="my-3" type="submit">
             {pending ? (
-              <Loader2 className='h-8 w-8 animate-spin text-slate-300' />
+              <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
             ) : (
               "Sign in"
             )}
@@ -172,7 +170,7 @@ function EmailResetForm() {
 
   if (success) {
     return (
-      <div className='flex flex-col justify-center text-center'>
+      <div className="flex flex-col justify-center text-center">
         <p>Password reset email sent</p>
         <p>Please check your email for a link to reset your password.</p>
       </div>
@@ -181,17 +179,17 @@ function EmailResetForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         {error && (
-          <Alert variant='destructive'>
-            <ExclamationTriangleIcon className='h-4 w-4' />
+          <Alert variant="destructive">
+            <ExclamationTriangleIcon className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>
               There was an issue sending the password reset email. Please try
               again later or{" "}
               <Link
                 href={"/contact-us"}
-                className='underline hover:text-stone-600'
+                className="underline hover:text-stone-600"
               >
                 contact us
               </Link>{" "}
@@ -201,7 +199,7 @@ function EmailResetForm() {
         )}
         <FormField
           control={form.control}
-          name='email'
+          name="email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
@@ -215,10 +213,10 @@ function EmailResetForm() {
             </FormItem>
           )}
         />
-        <div className='flex flex-col mx-12'>
-          <Button type='submit'>
+        <div className="flex flex-col mx-12">
+          <Button type="submit">
             {isLoading ? (
-              <Loader2 className='h-8 w-8 animate-spin text-slate-300' />
+              <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
             ) : (
               "Send me a link"
             )}
@@ -266,7 +264,7 @@ function EmailSignUpForm() {
 
   if (success) {
     return (
-      <div className='flex flex-col justify-center text-center'>
+      <div className="flex flex-col justify-center text-center">
         <p>Account created successfully!</p>
         <p>
           Please check your email for a verification link to complete your
@@ -280,18 +278,18 @@ function EmailSignUpForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmitSignIn)}
-        method='post'
-        className='space-y-8'
+        method="post"
+        className="space-y-8"
       >
         {error && (
-          <Alert variant='destructive'>
-            <ExclamationTriangleIcon className='h-4 w-4' />
+          <Alert variant="destructive">
+            <ExclamationTriangleIcon className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>
               There was an issue with your sign up. Please try again later or{" "}
               <Link
                 href={"/contact-us"}
-                className='underline hover:text-stone-600'
+                className="underline hover:text-stone-600"
               >
                 contact us
               </Link>{" "}
@@ -301,12 +299,12 @@ function EmailSignUpForm() {
         )}
         <FormField
           control={form.control}
-          name='name'
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input {...field} autoComplete='name' />
+                <Input {...field} autoComplete="name" />
               </FormControl>
               <FormDescription>
                 A display name for your account.
@@ -317,12 +315,12 @@ function EmailSignUpForm() {
         />
         <FormField
           control={form.control}
-          name='email'
+          name="email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input {...field} autoComplete='email' />
+                <Input {...field} autoComplete="email" />
               </FormControl>
               <FormDescription>
                 Your personal valid email address.
@@ -333,15 +331,15 @@ function EmailSignUpForm() {
         />
         <FormField
           control={form.control}
-          name='password'
+          name="password"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
                 <Input
                   {...field}
-                  type='password'
-                  autoComplete='current-password'
+                  type="password"
+                  autoComplete="current-password"
                 />
               </FormControl>
               <FormDescription>A secure password.</FormDescription>
@@ -349,10 +347,10 @@ function EmailSignUpForm() {
             </FormItem>
           )}
         />
-        <div className='flex flex-col mx-12'>
-          <Button className='my-3' type='submit'>
+        <div className="flex flex-col mx-12">
+          <Button className="my-3" type="submit">
             {pending ? (
-              <Loader2 className='h-8 w-8 animate-spin text-slate-300' />
+              <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
             ) : (
               "Sign up"
             )}
@@ -390,7 +388,7 @@ function LoginForm() {
     <>
       {form}
       <Button
-        className='mt-3 w-full text-center'
+        className="mt-3 w-full text-center"
         variant={"link"}
         onClick={() => {
           switch (formType) {
@@ -413,7 +411,7 @@ function LoginForm() {
 
       {formType === "signIn" && (
         <Button
-          className='mt-3 w-full text-center'
+          className="mt-3 w-full text-center"
           variant={"link"}
           onClick={() => {
             setFormType("signUp");
@@ -428,9 +426,9 @@ function LoginForm() {
 
 export function AuthForm() {
   return (
-    <div className='flex flex-col justify-center w-full max-w-md mx-auto'>
-      <div className='px-4 border-b border-slate-300'>
-        <div className='my-6'>
+    <div className="flex flex-col justify-center w-full max-w-md mx-auto">
+      <div className="px-4 border-b border-slate-300">
+        <div className="my-6">
           <LoginForm />
         </div>
       </div>
@@ -467,7 +465,7 @@ export const LoginBtn = ({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className='text-center'>
+      <DialogContent className="text-center">
         <AuthForm />
       </DialogContent>
     </Dialog>
@@ -477,14 +475,13 @@ export const LoginBtn = ({
 export const SignOutBtn = () => {
   const [isPending, setIsPending] = useState<boolean>(false);
 
-
   async function handleSignOut() {
     setIsPending(true);
     await Logout();
   }
 
   if (isPending) {
-    return <Loader2 className='h-8 w-8 animate-spin text-slate-300' />;
+    return <Loader2 className="h-8 w-8 animate-spin text-slate-300" />;
   }
 
   return <button onClick={handleSignOut}>Sign Out</button>;

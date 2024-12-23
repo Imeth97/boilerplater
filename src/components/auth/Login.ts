@@ -1,11 +1,7 @@
 "use server";
 
-import db from "@/db/db";
-import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import argon2 from "argon2";
-import { AuthResponse } from "./typings/auth";
 import { signIn } from ".";
+import { AuthResponse } from "./typings/auth";
 
 const Login = async (
   email?: string,
