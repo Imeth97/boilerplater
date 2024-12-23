@@ -37,7 +37,7 @@ docker run --name $CONTAINER_NAME \
     -e POSTGRES_DB=$DB_NAME \
     -e POSTGRES_USER=$DB_USER \
     -e POSTGRES_PASSWORD=$DB_PASSWORD \
-    -p 8080:5432 \
+    -p 5432:5432 \
     -d $POSTGRES_IMAGE
 
 # Wait for PostgreSQL to be ready
@@ -46,7 +46,7 @@ until docker exec $CONTAINER_NAME pg_isready > /dev/null 2>&1; do
     sleep 1
 done
 
-DATABASE_URL="postgresql://$DB_USER:$DB_PASSWORD@localhost:8080/$DB_NAME"
+DATABASE_URL="postgresql://$DB_USER:$DB_PASSWORD@localhost:5432/$DB_NAME"
 
 # if the --re-seed flag is passed, then run the seed script
 if [ "$1" == "--re-seed" ]; then
@@ -69,7 +69,7 @@ echo "🐘 PostgreSQL container is ready."
 echo "📊 Local database '$DB_NAME' is accessible with user '$DB_USER'."
 echo -e "\n🔗 Connection Details:"
 echo "   Host: localhost"
-echo "   Port: 8080"
+echo "   Port: 5432"
 echo -e "   Database URL: $DATABASE_URL\n"
 
 echo -e "==========================================\n"
