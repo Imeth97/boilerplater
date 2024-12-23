@@ -4,28 +4,44 @@ Boilerplater is a Next.js-based project designed to streamline the setup of auth
 
 ## Features
 
+- **Built with Next.js**:
+
+  - Scalable and modern React framework.
+  - Making usage of server functions, server actions & route handlers.
+  - [Next.js Documentation](https://nextjs.org/).
+
 - **Authentication with NextAuth**:
 
   - Full email and password implementation.
   - Sessions management.
   - [NextAuth Documentation](https://next-auth.js.org/).
 
-- **Database Integration with Drizzle ORM**:
+- **PostgreSQL Database Integration with Drizzle ORM**:
 
-  - Uses PostgreSQL as the database.
   - Fully connected to manage users and session data.
   - [Drizzle ORM Documentation](https://orm.drizzle.team/)
 
-- **Built with Next.js**:
-  - Scalable and modern React framework.
-  - [Next.js Documentation](https://nextjs.org/).
+- **UI Components**:
+
+  - Fully integrated with Shadcn/UI. [Shadcn/UI](https://ui.shadcn.com/)
+  - Lucide Icons. [Lucide Icons](https://lucide.dev/)
+
+- **Tailwind CSS**
+
+  - Easy inline styling. [Tailwind CSS](https://tailwindcss.com/)
+
+- **React Hook Form**
+
+  - Easy form handling. [React Hook Form](https://react-hook-form.com/)
+
+- **Zod**
+  - Easy form & api validation. [Zod](https://zod.dev/)
 
 ## Getting Started
 
 ### Prerequisites
 
 - Ensure **Docker** is running in the background.
-- Install dependencies using `yarn` or `npm`.
 
 ### Steps to Run
 
@@ -40,7 +56,7 @@ Boilerplater is a Next.js-based project designed to streamline the setup of auth
    ```
 3. Run the development server:
    ```bash
-   yarn dev
+   yarn dev-all
    ```
    See localhost:3000 in your browser.
 
@@ -49,4 +65,4 @@ Todos:
 - Email Account Confirmation and Reset:
   Implement functionality for email verification and password reset.
 - Deployment to AWS:
-  Update the existing main.tf file for AWS deployment.
+  main.tf file exists but may require updating.
