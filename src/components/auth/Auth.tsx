@@ -240,7 +240,7 @@ const signupFormSchema = z.object({
 function EmailSignUpForm() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const router = useRouter();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof signupFormSchema>>({
@@ -258,20 +258,8 @@ function EmailSignUpForm() {
       setError(true);
       return;
     }
-    setSuccess(true);
+    router.push("/dashboard");
     return;
-  }
-
-  if (success) {
-    return (
-      <div className="flex flex-col justify-center text-center">
-        <p>Account created successfully!</p>
-        <p>
-          Please check your email for a verification link to complete your
-          registration.
-        </p>
-      </div>
-    );
   }
 
   return (

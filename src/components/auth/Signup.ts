@@ -3,6 +3,7 @@ import db from "@/db/db";
 import { user } from "@/db/schema";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
+import Login from "./Login";
 import { AuthResponse } from "./typings/auth";
 
 async function Signup(
@@ -25,10 +26,13 @@ async function Signup(
       name: username,
     })
     .returning();
+
   if (!addedUser) {
     return { success: false, error: "Failed to create user" };
   }
-  return { success: true };
+
+  // sign in the user
+  return await Login(email, password);
 }
 
 export default Signup;
