@@ -3,6 +3,7 @@ import db from "@/db/db";
 import { user } from "@/db/schema";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
+import { sendMail } from "../email/sendEmail";
 import Login from "./Login";
 import { AuthResponse } from "./typings/auth";
 
@@ -29,6 +30,16 @@ async function Signup(
 
   if (!addedUser) {
     return { success: false, error: "Failed to create user" };
+  }
+
+  const mailSent = await sendMail({
+    sendTo: email,
+    subject: "Welcome to our app",
+    text: "Welcome to our app",
+  });
+
+  if (!mailSent) {
+    return { success: false, error: "Failed to send email" };
   }
 
   // sign in the user
