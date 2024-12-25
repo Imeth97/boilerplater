@@ -2,10 +2,13 @@ import jwt from "jsonwebtoken";
 import { headers } from "next/headers";
 export const checkAuth = async () => {
   try {
-    const response = await fetch("http://localhost:3000/api/auth/check-auth", {
-      method: "GET",
-      headers: headers(),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/check-auth`,
+      {
+        method: "GET",
+        headers: headers(),
+      }
+    );
     const data = await response.json();
     return !!data.authenticated;
   } catch (error) {

@@ -1,4 +1,7 @@
 import { auth } from "@/components/auth";
+import db from "@/db/db";
+import { user } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 const User = ({ name }: { name: string }) => {
   return (
@@ -11,6 +14,13 @@ const User = ({ name }: { name: string }) => {
 const Dashboard = async () => {
   const session = await auth();
 
+  // @todo: this is a hack to get the emailVerified status, need to find a better way e.g. using the session object
+  const isEmailVerified = await db
+    .select()
+    .from(user)
+    .where(eq(user.id, session?.user?.id!))
+    .then((rows) => rows[0]?.emailVerified ?? false);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md text-center">
@@ -20,6 +30,10 @@ const Dashboard = async () => {
         <p className="mt-2 text-gray-600">
           The currently signed-in user is{" "}
           <User name={session?.user?.name || "Unknown User"} />.
+          <br />
+          {isEmailVerified
+            ? "Their email is verified"
+            : "Their email is not verified"}
         </p>
       </div>
     </div>
