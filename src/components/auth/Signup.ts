@@ -1,12 +1,11 @@
 "use server";
 import db from "@/db/db";
 import { user } from "@/db/schema";
-import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { sendMail } from "../email/sendEmail";
 import Login from "./Login";
 import { AuthResponse } from "./typings/auth";
-import { constructConfirmationUrl } from "./utils";
+import { constructConfirmationUrl, constructHashedPassword } from "./utils";
 
 async function Signup(
   email: string,
@@ -19,7 +18,7 @@ async function Signup(
   if (existingUser) {
     return { success: false, error: "User already exists" };
   }
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await constructHashedPassword(password);
   const addedUser = await db
     .insert(user)
     .values({

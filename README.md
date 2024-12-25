@@ -56,7 +56,7 @@ Boilerplater is a Next.js-based project designed to streamline the setup of auth
 
 Todos:
 
-- Email Account Confirmation and Reset:
-  Implement functionality for email verification and password reset.
+- checkAuth function - need to find a better way to check if the user is authenticated at the middleware level
+- reset password tokens - need to find a way to handle token revocation to avoid replay attacks
 - Deployment to AWS:
   main.tf file exists but may require updating.

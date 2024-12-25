@@ -3,7 +3,7 @@ import db from "@/db/db";
 import { user } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-const User = ({ name }: { name: string }) => {
+const BoldSpan = ({ name }: { name: string }) => {
   return (
     <span data-testid="user-name" className="font-semibold text-blue-600">
       {name}
@@ -29,11 +29,10 @@ const Dashboard = async () => {
         </h1>
         <p className="mt-2 text-gray-600">
           The currently signed-in user is{" "}
-          <User name={session?.user?.name || "Unknown User"} />.
+          <BoldSpan name={session?.user?.name || "Unknown User"} />.
           <br />
-          {isEmailVerified
-            ? "Their email is verified"
-            : "Their email is not verified"}
+          Their email is{" "}
+          <BoldSpan name={isEmailVerified ? "verified" : "not verified"} />.
         </p>
       </div>
     </div>
