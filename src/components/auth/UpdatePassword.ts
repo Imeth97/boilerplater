@@ -4,6 +4,8 @@ import db from "@/db/db";
 import { user } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
+import { auth } from ".";
+import { Logout } from "./Logout";
 import { constructHashedPassword } from "./utils";
 export const UpdatePassword = async (password: string, token: string) => {
   try {
@@ -17,6 +19,12 @@ export const UpdatePassword = async (password: string, token: string) => {
   } catch (error) {
     console.error("[Update Password] Token verification failed:", error);
     return { success: false, error: "Failed to update password" };
+  }
+
+  // if the user is logged in, need to sign them out
+  const isLoggedIn = await auth();
+  if (!!isLoggedIn) {
+    await Logout();
   }
 
   return { success: true };

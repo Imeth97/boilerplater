@@ -1,4 +1,5 @@
 import { auth } from "@/components/auth";
+import { ChangePasswordBtn } from "@/components/auth/Auth";
 import db from "@/db/db";
 import { user } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -33,6 +34,12 @@ const Dashboard = async () => {
           <br />
           Their email is{" "}
           <BoldSpan name={isEmailVerified ? "verified" : "not verified"} />.
+          <br />
+          {isEmailVerified ? (
+            <ChangePasswordBtn email={session?.user?.email || ""} />
+          ) : (
+            "Please check the user's email for a verification link."
+          )}
         </p>
       </div>
     </div>

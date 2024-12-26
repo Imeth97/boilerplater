@@ -21,6 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -61,6 +62,9 @@ function EmailSignInForm() {
       setError(true);
       return;
     }
+
+    // navigate to dashboard with a refresh
+    router.refresh();
     router.push("/dashboard");
   }
 
@@ -255,7 +259,10 @@ export function NewPasswordForm({ token }: NewPasswordFormProps) {
       <div className="flex flex-col justify-center text-center">
         <p>Password successfully reset</p>
         <p>You can now use your new password to sign in.</p>
-        <Button onClick={() => router.push("/login")}>Sign in</Button>
+        <br />
+        <Button variant="outline" onClick={() => router.push("/login")}>
+          Sign in
+        </Button>
       </div>
     );
   }
@@ -339,6 +346,8 @@ function EmailSignUpForm() {
       setError(true);
       return;
     }
+    // navigate to dashboard with a refresh
+    router.refresh();
     router.push("/dashboard");
     return;
   }
@@ -555,13 +564,45 @@ export const LoginBtn = ({
   );
 };
 
+export const ChangePasswordBtn = ({ email }: { email: string }) => {
+  const { toast } = useToast();
+  const [isPending, setIsPending] = useState<boolean>(false);
+
+  const onClick = async () => {
+    setIsPending(true);
+    const res = await ResetPassword(email);
+    setIsPending(false);
+    if (!res.success) {
+      toast({
+        title: "Error",
+        description: "Error resetting password",
+        variant: "destructive",
+      });
+    }
+    toast({
+      title: "Password reset email sent",
+      description: "Please check your email for a link to reset your password.",
+    });
+  };
+
+  return (
+    <Button className="mt-3" onClick={onClick} disabled={isPending}>
+      {isPending ? (
+        <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
+      ) : (
+        "Change Password"
+      )}
+    </Button>
+  );
+};
+
 export const SignOutBtn = () => {
   const [isPending, setIsPending] = useState<boolean>(false);
 
   async function handleSignOut() {
     console.log("signing out");
     setIsPending(true);
-    await Logout();
+    await Logout("/");
   }
 
   if (isPending) {

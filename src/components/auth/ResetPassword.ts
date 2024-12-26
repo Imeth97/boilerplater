@@ -19,6 +19,14 @@ export const ResetPassword = async (email: string): Promise<AuthResponse> => {
     return { success: false, error: "User not found" };
   }
 
+  // uncomment this to require email verification before a user can reset their password
+  // if (!userToReset.emailVerified) {
+  //   console.error(
+  //     `[Reset Password] User email not verified for email: ${email}`
+  //   );
+  //   return { success: false, error: "User email not verified" };
+  // }
+
   const resetPasswordUrl = constructPasswordResetUrl(userToReset.id);
 
   const mailSent = await sendMail({
