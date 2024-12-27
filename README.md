@@ -55,10 +55,32 @@ Boilerplater is a Next.js-based project designed to streamline the setup of auth
    ```
    See localhost:3000 in your browser.
 
-Todos:
+**ENVs - make a .env file at the root of the project with the following:**
+Todo - add a script to generate the env file
+
+- DATABASE_URL
+- EMAIL_VERIFICATION_SECRET - generate a random hash
+- EMAIL_PASSWORD_RESET_SECRET - generate a random hash
+- NEXTAUTH_SECRET - generate a random hash
+- NEXT_PUBLIC_BASE_URL - http://localhost:3000 for local development
+
+smtp setup for email sending:
+SMTP_SERVER_HOST
+SMTP_SERVER_USERNAME
+SMTP_SERVER_PASSWORD
+SMTP_SERVER_PORT
+SMTP_SERVICE
+
+database url:
+NEXT_DATABASE_URL - use postgresql://myuser:mypassword@localhost:5432/mydb for local development.
+
+Most of these must change for production.
+
+**Todos:**
 
 High Priority:
 
+- env generation script - need to create a script to generate the env file
 - email spam - need to implement a way to prevent email spamming
 - checkAuth function - need to find a better way to check if the user is authenticated at the middleware level as drizzle queries do not work on the edge runtime
 - reset password tokens - need to find a way to handle token revocation to avoid replay attacks (redis/dynamodb?)
