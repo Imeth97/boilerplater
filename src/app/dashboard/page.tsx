@@ -3,6 +3,7 @@ import { ChangePasswordBtn } from "@/components/auth/Auth";
 import db from "@/db/db";
 import { user } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
 const BoldSpan = ({ name }: { name: string }) => {
   return (
@@ -14,12 +15,16 @@ const BoldSpan = ({ name }: { name: string }) => {
 
 const Dashboard = async () => {
   const session = await auth();
+  const userId = session?.user?.id;
 
+  if (!userId) {
+    redirect("/");
+  }
   // @todo: this is a hack to get the emailVerified status, need to find a better way e.g. using the session object
   const isEmailVerified = await db
     .select()
     .from(user)
-    .where(eq(user.id, session?.user?.id!))
+    .where(eq(user.id, userId))
     .then((rows) => rows[0]?.emailVerified ?? false);
 
   return (
