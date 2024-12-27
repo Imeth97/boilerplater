@@ -1,8 +1,9 @@
 "use server";
 import { signOut as naSignOut } from ".";
 
-export async function Logout() {
+export async function Logout(redirectTo?: string) {
   await naSignOut({
-    redirectTo: "/",
+    redirect: !!redirectTo,
+    redirectTo: redirectTo,
   });
 }

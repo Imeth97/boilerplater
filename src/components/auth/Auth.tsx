@@ -21,12 +21,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Input } from "../ui/input";
 import PasswordInputField from "../ui/passwordInput";
 import { Logout } from "./Logout";
+import { ResetPassword } from "./ResetPassword";
+import { UpdatePassword } from "./UpdatePassword";
 
 const loginFormSchema = z.object({
   email: z.string().email({
@@ -59,6 +62,9 @@ function EmailSignInForm() {
       setError(true);
       return;
     }
+
+    // navigate to dashboard with a refresh
+    router.refresh();
     router.push("/dashboard");
   }
 
@@ -145,60 +151,46 @@ function EmailResetForm() {
     resolver: zodResolver(resetFormSchema),
   });
 
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [error, setError] = useState(false);
-  // const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  //   const supabase = createClientComponentClient();
-
-  async function onSubmit() {
-    // const { email } = values;
-    // const baseUrl = getBaseUrl();
-    // // Send a password reset email
-    // setIsLoading(true);
-    // const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    //   redirectTo: `${baseUrl}/auth/reset`,
-    // });
-    // if (!!error) {
-    //   setIsLoading(false);
-    //   setError(true);
-    //   return;
-    // }
-    // setIsLoading(false);
-    // setSuccess(true);
+  async function onSubmit(values: z.infer<typeof resetFormSchema>) {
+    // Send a password reset email
+    const { email } = values;
+    setIsLoading(true);
+    const res = await ResetPassword(email);
+    if (!res.success) {
+      setIsLoading(false);
+      setError(true);
+      return;
+    }
+    setIsLoading(false);
+    setSuccess(true);
   }
 
-  // if (success) {
-  //   return (
-  //     <div className="flex flex-col justify-center text-center">
-  //       <p>Password reset email sent</p>
-  //       <p>Please check your email for a link to reset your password.</p>
-  //     </div>
-  //   );
-  // }
-
-  const isLoading = false;
+  if (success) {
+    return (
+      <div className="flex flex-col justify-center text-center">
+        <p>Password reset email sent</p>
+        <p>Please check your email for a link to reset your password.</p>
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* {error && (
+        {error && (
           <Alert variant="destructive">
             <ExclamationTriangleIcon className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
             <AlertDescription>
-              There was an issue sending the password reset email. Please try
-              again later or{" "}
-              <Link
-                href={"/contact-us"}
-                className="underline hover:text-stone-600"
-              >
-                contact us
-              </Link>{" "}
-              for support.
+              There was an issue sending the password reset email. Please ensure
+              the email is valid and an account exists under that email.
             </AlertDescription>
           </Alert>
-        )} */}
+        )}
         <FormField
           control={form.control}
           name="email"
@@ -221,6 +213,100 @@ function EmailResetForm() {
               <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
             ) : (
               "Send me a link"
+            )}
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
+}
+
+interface NewPasswordFormProps {
+  token: string;
+}
+
+const newPasswordFormSchema = z.object({
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
+});
+
+export function NewPasswordForm({ token }: NewPasswordFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const router = useRouter();
+
+  const form = useForm<z.infer<typeof newPasswordFormSchema>>({
+    resolver: zodResolver(newPasswordFormSchema),
+  });
+
+  async function onSubmit(values: z.infer<typeof newPasswordFormSchema>) {
+    setIsLoading(true);
+    // TODO: Implement password reset API call here
+    const res = await UpdatePassword(values.password, token);
+    if (!res.success) {
+      setIsLoading(false);
+      setError(true);
+      return;
+    }
+    setIsLoading(false);
+    setSuccess(true);
+  }
+
+  if (success) {
+    return (
+      <div className="flex flex-col justify-center text-center">
+        <p>Password successfully reset</p>
+        <p>You can now use your new password to sign in.</p>
+        <br />
+        <Button variant="outline" onClick={() => router.push("/login")}>
+          Sign in
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {error && (
+          <Alert variant="destructive">
+            <ExclamationTriangleIcon className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              There was an issue resetting your password. Please try again later
+              or{" "}
+              <Link
+                href={"/contact-us"}
+                className="underline hover:text-stone-600"
+              >
+                contact us
+              </Link>{" "}
+              for support.
+            </AlertDescription>
+          </Alert>
+        )}
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>New Password</FormLabel>
+              <FormControl>
+                <PasswordInputField {...field} />
+              </FormControl>
+              <FormDescription>Enter your new password</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex flex-col mx-12">
+          <Button type="submit">
+            {isLoading ? (
+              <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
+            ) : (
+              "Reset Password"
             )}
           </Button>
         </div>
@@ -260,6 +346,8 @@ function EmailSignUpForm() {
       setError(true);
       return;
     }
+    // navigate to dashboard with a refresh
+    router.refresh();
     router.push("/dashboard");
     return;
   }
@@ -476,13 +564,45 @@ export const LoginBtn = ({
   );
 };
 
+export const ChangePasswordBtn = ({ email }: { email: string }) => {
+  const { toast } = useToast();
+  const [isPending, setIsPending] = useState<boolean>(false);
+
+  const onClick = async () => {
+    setIsPending(true);
+    const res = await ResetPassword(email);
+    setIsPending(false);
+    if (!res.success) {
+      toast({
+        title: "Error",
+        description: "Error resetting password",
+        variant: "destructive",
+      });
+    }
+    toast({
+      title: "Password reset email sent",
+      description: "Please check your email for a link to reset your password.",
+    });
+  };
+
+  return (
+    <Button className="mt-3" onClick={onClick} disabled={isPending}>
+      {isPending ? (
+        <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
+      ) : (
+        "Change Password"
+      )}
+    </Button>
+  );
+};
+
 export const SignOutBtn = () => {
   const [isPending, setIsPending] = useState<boolean>(false);
 
   async function handleSignOut() {
     console.log("signing out");
     setIsPending(true);
-    await Logout();
+    await Logout("/");
   }
 
   if (isPending) {

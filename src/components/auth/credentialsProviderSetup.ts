@@ -34,6 +34,11 @@ export default Credentials({
       foundUser?.password ?? ""
     );
 
+    // Uncomment this to require email verification
+    // if (!foundUser?.emailVerified) {
+    //   return null;
+    // }
+
     if (passwordsMatch) {
       return foundUser ?? null;
     }
