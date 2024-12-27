@@ -14,6 +14,7 @@ Boilerplater is a Next.js-based project designed to streamline the setup of auth
 
   - Full email and password (credentials provider) implementation with sessions.
   - Email confirmation and password reset with JWT.
+  - [Nodemailer](https://nodemailer.com/) for email sending.
   - [NextAuth Documentation](https://next-auth.js.org/).
 
 - **PostgreSQL Database Integration with Drizzle ORM**:
@@ -56,8 +57,13 @@ Boilerplater is a Next.js-based project designed to streamline the setup of auth
 
 Todos:
 
+High Priority:
+
+- email spam - need to implement a way to prevent email spamming
 - checkAuth function - need to find a better way to check if the user is authenticated at the middleware level as drizzle queries do not work on the edge runtime
 - reset password tokens - need to find a way to handle token revocation to avoid replay attacks (redis/dynamodb?)
+
+Low Priority:
+
 - rabbitmq - need to implement a message queue for email sending
-- Deployment to AWS:
-  main.tf file exists but may require updating.
+- Deployment to AWS: main.tf file exists but may require updating.
