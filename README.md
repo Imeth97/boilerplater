@@ -38,7 +38,7 @@ Boilerplater is a Next.js-based project designed to streamline the setup of auth
 
 - Ensure **Docker** is running in the background.
 
-### Steps to Run
+### Steps to Run locally
 
 1. Clone the repository:
    ```bash
@@ -53,34 +53,34 @@ Boilerplater is a Next.js-based project designed to streamline the setup of auth
    ```bash
    yarn dev-all
    ```
+   This will generate the required .env file and start both the local database and the development server.
    See localhost:3000 in your browser.
 
-**ENVs - make a .env file at the root of the project with the following:**
-Todo - add a script to generate the env file
+**ENVs - a script is provided to generate the env file:**
+However, you can also create the .env file manually at the root of the project with the following:
 
-- DATABASE_URL
-- EMAIL_VERIFICATION_SECRET - generate a random hash
-- EMAIL_PASSWORD_RESET_SECRET - generate a random hash
-- NEXTAUTH_SECRET - generate a random hash
-- NEXT_PUBLIC_BASE_URL - http://localhost:3000 for local development
+- EMAIL_VERIFICATION_SECRET= generate a random hash
+- EMAIL_PASSWORD_RESET_SECRET= generate a random hash
+- NEXTAUTH_SECRET= generate a random hash
+- NEXT_PUBLIC_BASE_URL=http://localhost:3000 or your custom base url
+- NEXT_DATABASE_URL=postgresql://myuser:mypassword@localhost:5432/mydb for local or your custom database url
+- AUTH_DRIZZLE_URL=postgresql://myuser:mypassword@localhost:5432/mydb for local or your custom database url
+- SMTP_SERVER_HOST= e.g. smtp.gmail.com
+- SMTP_SERVER_USERNAME= your email
+- SMTP_SERVER_PASSWORD= your email password. For gmail, you must use an app password. For this, enable 2-step verification on your google account and create an app password.
+- SMTP_SERVER_PORT=587 or whatever port your email provider uses
+- SMTP_SERVICE= e.g. gmail
 
-smtp setup for email sending:
-SMTP_SERVER_HOST
-SMTP_SERVER_USERNAME
-SMTP_SERVER_PASSWORD
-SMTP_SERVER_PORT
-SMTP_SERVICE
-
-database url:
-NEXT_DATABASE_URL - use postgresql://myuser:mypassword@localhost:5432/mydb for local development.
-
-Most of these must change for production.
+Important:
+Please note that depending on your email provier, the configuration might be different and may require more env variables.
+Also make sure to update the .env file with the correct values and ensure security with the secrets and
+passwords when deploying to production or uploading your code to a public repo.
+Remember that regenerating secrets will invalidate all existing tokens.
 
 **Todos:**
 
 High Priority:
 
-- env generation script - need to create a script to generate the env file
 - email spam - need to implement a way to prevent email spamming
 - checkAuth function - need to find a better way to check if the user is authenticated at the middleware level as drizzle queries do not work on the edge runtime
 - reset password tokens - need to find a way to handle token revocation to avoid replay attacks (redis/dynamodb?)

@@ -25,6 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Spacer from "../ common/Spacer";
 import { Input } from "../ui/input";
 import PasswordInputField from "../ui/passwordInput";
 import { Logout } from "./Logout";
@@ -259,8 +260,8 @@ export function NewPasswordForm({ token }: NewPasswordFormProps) {
       <div className="flex flex-col justify-center text-center">
         <p>Password successfully reset</p>
         <p>You can now use your new password to sign in.</p>
-        <br />
-        <Button variant="outline" onClick={() => router.push("/login")}>
+        <Spacer verticalPx={24} />
+        <Button onClick={() => router.push("/login")} className="mx-12">
           Sign in
         </Button>
       </div>
