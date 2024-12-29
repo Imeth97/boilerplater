@@ -1,6 +1,7 @@
 # Boilerplater
 
-Boilerplater is a Next.js-based project designed to streamline the setup of authentication and database integration for your applications. This boilerplate provides robust tools and workflows to help you kickstart your project with minimal effort.
+Next.js boilerplate that comes set up with a full postgres database integration (using drizzle) and a full NextAuth credentials implementation (the entire flow, with email confirmation etc.).
+See below for more details + how to clone and run the boilerplate. 
 
 ## Features
 
