@@ -5,7 +5,6 @@ import { checkAuth } from "./components/auth/utils";
 // Routes that don't require authentication
 export const NO_AUTH_ROUTES = ["/", "/login", "/reset-password"];
 
-// This function can be marked `async` if using `await` inside
 export async function middleware(req: NextRequest) {
   // Attempt to get the token from the request using NextAuth's getToken
   const session = await checkAuth();

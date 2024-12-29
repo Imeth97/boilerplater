@@ -36,7 +36,7 @@ The .env file has been generated with initial values. You also need to set up em
 
 Skip this step if you do not care about email sending for now.
 
-Please note that depending on your email provier, the configuration might be different.
+Please note that depending on your email provider, the configuration might be different.
 Please see src/components/email/sendEmail.ts to customize the email sending process.
 
 Please provide the following details:

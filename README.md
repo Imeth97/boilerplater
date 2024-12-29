@@ -1,7 +1,7 @@
 # Boilerplater
 
 Next.js boilerplate that comes set up with a full postgres database integration (using drizzle) and a full NextAuth credentials implementation (the entire flow, with email confirmation etc.).
-See below for more details + how to clone and run the boilerplate. 
+See below for more details + how to clone and run the boilerplate.
 
 ## Features
 
@@ -73,7 +73,7 @@ However, you can also create the .env file manually at the root of the project w
 - SMTP_SERVICE= e.g. gmail
 
 Important:
-Please note that depending on your email provier, the configuration might be different and may require more env variables.
+Please note that depending on your email provider, the configuration might be different and may require more env variables.
 Also make sure to update the .env file with the correct values and ensure security with the secrets and
 passwords when deploying to production or uploading your code to a public repo.
 Remember that regenerating secrets will invalidate all existing tokens.
