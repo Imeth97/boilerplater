@@ -25,7 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Spacer from "../ common/Spacer";
+import Spacer from "../common/Spacer";
 import { Input } from "../ui/input";
 import PasswordInputField from "../ui/passwordInput";
 import { Logout } from "./Logout";
