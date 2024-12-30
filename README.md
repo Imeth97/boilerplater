@@ -40,10 +40,10 @@ See below for more details + how to clone and run the boilerplate.
 - Ensure **Docker** is running in the background.
 
 ### Steps to Run locally
-
+(Feel free to use your favourite package manager instead of yarn - just consider deleting the yarn.lock file if you do so!)
 1. Clone the repository:
    ```bash
-   git clone <repo-url>
+   # clone the repo, and go to its top level
    cd boilerplater
    ```
 2. Install dependencies:
