@@ -10,7 +10,6 @@ import { sendMail } from "@/lib/email/sendEmail";
 import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
-// Mock dependencies
 vi.mock("@/db/db", () => ({
   __esModule: true,
   default: {
@@ -44,22 +43,18 @@ vi.mock("@/lib/auth/utils", () => ({
   constructHashedPassword: vi.fn(),
 }));
 
-// Test suite
 describe("Signup function", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("should return an error if the user already exists", async () => {
-    // Arrange
     (db.query.user.findFirst as Mock).mockResolvedValueOnce({
       email: "existing@example.com",
     });
 
-    // Act
     const response = await Signup("existing@example.com", "password123");
 
-    // Assert
     expect(response).toEqual({ success: false, error: "User already exists" });
     expect(db.query.user.findFirst).toHaveBeenCalledWith({
       where: eq(user.email, "existing@example.com"),
@@ -67,7 +62,6 @@ describe("Signup function", () => {
   });
 
   it("should return an error if user creation fails", async () => {
-    // Arrange
     (db.query.user.findFirst as Mock).mockResolvedValueOnce(null);
     (constructHashedPassword as Mock).mockResolvedValueOnce("hashedPassword");
     (db.insert as Mock).mockReturnValueOnce({
@@ -76,10 +70,8 @@ describe("Signup function", () => {
       }),
     });
 
-    // Act
     const response = await Signup("newuser@example.com", "password123");
 
-    // Assert
     expect(response).toEqual({
       success: false,
       error: "Failed to create user",
@@ -87,7 +79,6 @@ describe("Signup function", () => {
   });
 
   it("should return an error if sending the email fails", async () => {
-    // Arrange
     (db.query.user.findFirst as Mock).mockResolvedValueOnce(null);
     (constructHashedPassword as Mock).mockResolvedValueOnce("hashedPassword");
     (db.insert as Mock).mockReturnValueOnce({
@@ -102,10 +93,8 @@ describe("Signup function", () => {
     );
     (sendMail as Mock).mockResolvedValueOnce(false);
 
-    // Act
     const response = await Signup("newuser@example.com", "password123");
 
-    // Assert
     expect(response).toEqual({ success: false, error: "Failed to send email" });
     expect(sendMail).toHaveBeenCalledWith({
       sendTo: "newuser@example.com",
@@ -116,7 +105,6 @@ describe("Signup function", () => {
   });
 
   it("should call Login and return its result on success", async () => {
-    // Arrange
     (db.query.user.findFirst as Mock).mockResolvedValueOnce(null);
     (constructHashedPassword as Mock).mockResolvedValueOnce("hashedPassword");
     (db.insert as Mock).mockReturnValueOnce({
@@ -132,10 +120,8 @@ describe("Signup function", () => {
     (sendMail as Mock).mockResolvedValueOnce(true);
     (Login as Mock).mockResolvedValueOnce({ success: true });
 
-    // Act
     const response = await Signup("newuser@example.com", "password123");
 
-    // Assert
     expect(response).toEqual({ success: true });
     expect(Login).toHaveBeenCalledWith("newuser@example.com", "password123");
   });
