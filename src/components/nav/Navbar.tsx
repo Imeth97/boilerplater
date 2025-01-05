@@ -8,7 +8,7 @@ import {
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { auth } from "../auth";
+import { auth } from "../../lib/auth";
 import { LoginBtn, SignOutBtn } from "../auth/Auth";
 
 const Navbar: React.FC = async () => {

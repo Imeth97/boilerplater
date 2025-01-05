@@ -1,7 +1,7 @@
-import { auth } from "@/components/auth";
 import { ChangePasswordBtn } from "@/components/auth/Auth";
 import db from "@/db/db";
 import { user } from "@/db/schema";
+import { auth } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 

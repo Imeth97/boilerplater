@@ -9,8 +9,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import Login from "@/components/auth/Login";
-import Signup from "@/components/auth/Signup";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Form,
@@ -22,15 +20,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import Login from "@/lib/auth/Login";
+import { Logout } from "@/lib/auth/Logout";
+import { ResetPassword } from "@/lib/auth/ResetPassword";
+import Signup from "@/lib/auth/Signup";
+import { UpdatePassword } from "@/lib/auth/UpdatePassword";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Spacer from "../common/Spacer";
 import { Input } from "../ui/input";
 import PasswordInputField from "../ui/passwordInput";
-import { Logout } from "./Logout";
-import { ResetPassword } from "./ResetPassword";
-import { UpdatePassword } from "./UpdatePassword";
 
 const loginFormSchema = z.object({
   email: z.string().email({

@@ -1,8 +1,8 @@
 "use server";
 import db from "@/db/db";
 import { user } from "@/db/schema";
+import { sendMail } from "@/lib/email/sendEmail";
 import { eq } from "drizzle-orm";
-import { sendMail } from "../email/sendEmail";
 import Login from "./Login";
 import { AuthResponse } from "./typings/auth";
 import { constructConfirmationUrl, constructHashedPassword } from "./utils";

@@ -31,7 +31,12 @@ See below for more details + how to clone and run the boilerplate.
   - Easy form handling with React Hook Form. [React Hook Form](https://react-hook-form.com/)
 
 - **Zod**
+
   - Easy form & api validation. [Zod](https://zod.dev/)
+
+- **Testing**
+
+  - Unit testing with Vitest. [Vitest](https://vitest.dev/)
 
 ## Getting Started
 
@@ -40,7 +45,9 @@ See below for more details + how to clone and run the boilerplate.
 - Ensure **Docker** is running in the background.
 
 ### Steps to Run locally
+
 (Feel free to use your favourite package manager instead of yarn - just consider deleting the yarn.lock file if you do so!)
+
 1. Clone the repository:
    ```bash
    # clone the repo, and go to its top level
