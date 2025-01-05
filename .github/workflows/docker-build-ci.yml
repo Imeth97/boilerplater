@@ -16,6 +16,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Ensure Unit Tests Pass
+        run: |
+          yarn run test --run
+
       - name: Verify Docker Daemon
         run: |
           docker info
