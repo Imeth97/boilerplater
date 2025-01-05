@@ -1,4 +1,4 @@
-import { auth } from "@/components/auth";
+import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
 export const GET = auth(function GET(req) {

@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 // 1. Mock your "auth" HOC so it always assumes the request is authorized.
-vi.mock("@/components/auth", () => ({
+vi.mock("@/lib/auth", () => ({
   auth: (handler: any) => handler,
 }));
 

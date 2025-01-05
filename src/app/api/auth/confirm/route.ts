@@ -1,7 +1,7 @@
 // Email confirmation route
-import { auth } from "@/components/auth";
 import db from "@/db/db";
 import { user } from "@/db/schema";
+import { auth } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";

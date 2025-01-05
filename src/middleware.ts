@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { checkAuth } from "./components/auth/utils";
+import { checkAuth } from "./lib/auth/utils";
 
 // Routes that don't require authentication
 export const NO_AUTH_ROUTES = ["/", "/login", "/reset-password"];
