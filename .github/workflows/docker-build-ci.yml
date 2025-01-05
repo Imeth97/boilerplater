@@ -20,7 +20,7 @@ jobs:
         run: |
           yarn install
 
-      - name: Ensure Unit Tests Pass
+      - name: Run Unit Tests
         run: |
           yarn run test --run
 
