@@ -4,7 +4,7 @@ import { Button, ButtonVariants } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeftIcon, Loader2 } from "lucide-react";
+import { ArrowLeftIcon, Github, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { GithubLogin } from "@/lib/auth/GithubLogin";
 import Login from "@/lib/auth/Login";
 import { Logout } from "@/lib/auth/Logout";
 import { ResetPassword } from "@/lib/auth/ResetPassword";
@@ -513,6 +514,8 @@ function LoginForm() {
           Don&apos;t have an account? Sign up instead
         </Button>
       )}
+
+      <GithubLoginButton />
     </>
   );
 }
@@ -520,7 +523,7 @@ function LoginForm() {
 export function AuthForm() {
   return (
     <div className="flex flex-col justify-center w-full max-w-md mx-auto">
-      <div className="px-4 border-b border-slate-300">
+      <div className="px-4">
         <div className="my-6">
           <LoginForm />
         </div>
@@ -562,6 +565,33 @@ export const LoginBtn = ({
         <AuthForm />
       </DialogContent>
     </Dialog>
+  );
+};
+
+export const GithubLoginButton = () => {
+  const [isPending, setIsPending] = useState<boolean>(false);
+  const onClick = async () => {
+    setIsPending(true);
+    const res = await GithubLogin();
+    setIsPending(false);
+    console.log(res);
+  };
+  return (
+    <div className="flex items-center justify-center mt-3 space-x-2">
+      <Button
+        className="flex items-center justify-center mt-3 space-x-2"
+        onClick={onClick}
+        variant="outline"
+        disabled={isPending}
+      >
+        {isPending ? (
+          <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
+        ) : (
+          <Github className="h-5 w-5 text-gray-600" />
+        )}
+        <span className="text-gray-800 font-medium">Login with GitHub</span>
+      </Button>
+    </div>
   );
 };
 
