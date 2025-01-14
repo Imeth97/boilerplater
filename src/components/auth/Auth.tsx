@@ -59,6 +59,11 @@ function EmailSignInForm() {
     // ✅ This will be type-safe and validated.
     setPending(true);
     const res = await Login(values.email, values.password);
+    if (!!res.redirect) {
+      router.refresh();
+      router.push(res.redirect);
+      return;
+    }
     if (!res.success) {
       setPending(false);
       setError(true);
@@ -568,7 +573,13 @@ export const LoginBtn = ({
   );
 };
 
-export const ChangePasswordBtn = ({ email }: { email: string }) => {
+export const ChangePasswordBtn = ({
+  email,
+  label,
+}: {
+  email: string;
+  label: string;
+}) => {
   const { toast } = useToast();
   const [isPending, setIsPending] = useState<boolean>(false);
 
@@ -594,7 +605,7 @@ export const ChangePasswordBtn = ({ email }: { email: string }) => {
       {isPending ? (
         <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
       ) : (
-        "Change Password"
+        label
       )}
     </Button>
   );

@@ -40,7 +40,10 @@ const Dashboard = async () => {
               .
               <br />
               {userDetails?.emailVerified ? (
-                <ChangePasswordBtn email={userDetails.email || ""} />
+                <ChangePasswordBtn
+                  email={userDetails.email || ""}
+                  label="Set Password"
+                />
               ) : (
                 "Please check the user's email for a verification link."
               )}

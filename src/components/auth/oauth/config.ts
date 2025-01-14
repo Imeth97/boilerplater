@@ -8,3 +8,19 @@ export const providersConfig = [
     loginAction: GithubLogin,
   },
 ];
+
+interface ProviderIcons {
+  [key: string]: {
+    name: string;
+    action: () => Promise<void>;
+    icon: React.ElementType;
+  };
+}
+
+export const providerIcons: ProviderIcons = {
+  github: {
+    name: "GitHub",
+    action: GithubLogin,
+    icon: Github,
+  },
+};

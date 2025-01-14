@@ -1,7 +1,8 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { providersConfig } from "./config";
+import { providerIcons, providersConfig } from "./config";
 
 interface Provider {
   name: string;
@@ -32,6 +33,12 @@ const Provider = ({ name, Icon, loginAction }: Provider) => {
       </Button>
     </div>
   );
+};
+
+export const ProviderBtn = ({ provider }: { provider: string }) => {
+  const { icon, name, action } = providerIcons[provider] ?? {};
+  if (!icon || !name || !action) return null;
+  return <Provider Icon={icon} name={name} loginAction={action} />;
 };
 
 export default (providersConfig as Provider[]).map((provider) => {
