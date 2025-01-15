@@ -41,6 +41,6 @@ export const ProviderBtn = ({ provider }: { provider: string }) => {
   return <Provider Icon={icon} name={name} loginAction={action} />;
 };
 
-export default (providersConfig as Provider[]).map((provider) => {
-  return <Provider {...provider} />;
+export default (providersConfig as Provider[]).map((provider, index) => {
+  return <Provider {...provider} key={index} />;
 }) as JSX.Element[];

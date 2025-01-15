@@ -13,7 +13,7 @@ const AccountResolution = ({ provider, email }: AccountResolutionProps) => {
         {!!provider && (
           <div>
             {" "}
-            <p>You've signed in previously with {provider}, you can </p>
+            <p>You&apos;ve signed in previously with {provider}, you can </p>
             <ProviderBtn provider={provider} />{" "}
           </div>
         )}
