@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Project
         run: |
-          yarn run build
+          NEXT_DATABASE_URL=postgresql://myuser:mypassword@localhost:5432/mydb yarn run build
 
       # Uncomment this to run the docker build
 
