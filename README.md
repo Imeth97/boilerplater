@@ -11,10 +11,11 @@ See below for more details + how to clone and run the boilerplate.
   - Making usage of server functions, server actions & route handlers.
   - [Next.js Documentation](https://nextjs.org/).
 
-- **Authentication with NextAuth - Why pay for a service when you can do it yourself easily?**:
+- **Authentication with NextAuth - Fully managed on your own DB. No 3rd party costs.**:
 
   - Full email and password (credentials provider) implementation with sessions.
   - Email confirmation and password reset with JWT.
+  - Implementation alongside OAuth providers with account clash handling.
   - [Nodemailer](https://nodemailer.com/) for email sending.
   - [NextAuth Documentation](https://next-auth.js.org/).
 
