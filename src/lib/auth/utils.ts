@@ -1,23 +1,9 @@
+import db from "@/db/db";
+import { account, user } from "@/db/schema";
 import bcrypt from "bcryptjs";
+import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
-import { headers } from "next/headers";
-
-export const checkAuth = async () => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/check-auth`,
-      {
-        method: "GET",
-        headers: headers(),
-      }
-    );
-    const data = await response.json();
-    return !!data.authenticated;
-  } catch (error) {
-    console.error("Error checking authentication:", error);
-    return false;
-  }
-};
+import { auth } from ".";
 
 export const constructHashedPassword = async (password: string) => {
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -41,3 +27,35 @@ export const constructPasswordResetUrl = (userId: string) => {
   const resetPasswordUrl = `${baseUrl}/reset-password?token=${token}`;
   return resetPasswordUrl;
 };
+
+export async function getUserDetails() {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    return null;
+  }
+
+  const result = await db
+    .select({
+      emailVerified: user.emailVerified,
+      provider: account.provider,
+    })
+    .from(user)
+    .leftJoin(account, eq(account.userId, user.id))
+    .where(eq(user.id, userId));
+
+  if (!result.length) {
+    return null;
+  }
+
+  const { emailVerified, provider } = result[0];
+
+  return {
+    userId,
+    email: session?.user?.email,
+    name: session?.user?.name,
+    emailVerified,
+    provider,
+  };
+}

@@ -31,6 +31,7 @@ import { useRouter } from "next/navigation";
 import Spacer from "../common/Spacer";
 import { Input } from "../ui/input";
 import PasswordInputField from "../ui/passwordInput";
+import Providers from "./oauth/Provider";
 
 const loginFormSchema = z.object({
   email: z.string().email({
@@ -58,6 +59,11 @@ function EmailSignInForm() {
     // ✅ This will be type-safe and validated.
     setPending(true);
     const res = await Login(values.email, values.password);
+    if (!!res.redirect) {
+      router.refresh();
+      router.push(res.redirect);
+      return;
+    }
     if (!res.success) {
       setPending(false);
       setError(true);
@@ -513,6 +519,8 @@ function LoginForm() {
           Don&apos;t have an account? Sign up instead
         </Button>
       )}
+
+      {Providers}
     </>
   );
 }
@@ -520,7 +528,7 @@ function LoginForm() {
 export function AuthForm() {
   return (
     <div className="flex flex-col justify-center w-full max-w-md mx-auto">
-      <div className="px-4 border-b border-slate-300">
+      <div className="px-4">
         <div className="my-6">
           <LoginForm />
         </div>
@@ -565,7 +573,13 @@ export const LoginBtn = ({
   );
 };
 
-export const ChangePasswordBtn = ({ email }: { email: string }) => {
+export const ChangePasswordBtn = ({
+  email,
+  label,
+}: {
+  email: string;
+  label: string;
+}) => {
   const { toast } = useToast();
   const [isPending, setIsPending] = useState<boolean>(false);
 
@@ -591,7 +605,7 @@ export const ChangePasswordBtn = ({ email }: { email: string }) => {
       {isPending ? (
         <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
       ) : (
-        "Change Password"
+        label
       )}
     </Button>
   );

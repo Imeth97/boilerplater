@@ -1,14 +1,14 @@
 import NextAuth, { NextAuthConfig } from "next-auth";
+import GitHub from "next-auth/providers/github";
 import { adapter } from "./adaptor";
 import callbacks from "./authCallbacks";
 import credentialsProviderSetup from "./credentialsProviderSetup";
 import jwt from "./jwt.config";
-
 export const BASE_PATH = "/api/auth";
 
 const authOptions: NextAuthConfig = {
   adapter,
-  providers: [credentialsProviderSetup],
+  providers: [credentialsProviderSetup, GitHub],
   callbacks,
   basePath: BASE_PATH,
   jwt,

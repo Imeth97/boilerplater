@@ -1,6 +1,23 @@
+import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { checkAuth } from "./lib/auth/utils";
+
+const checkAuth = async () => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/check-auth`,
+      {
+        method: "GET",
+        headers: headers(),
+      }
+    );
+    const data = await response.json();
+    return !!data.authenticated;
+  } catch (error) {
+    console.error("Error checking authentication:", error);
+    return false;
+  }
+};
 
 // Routes that don't require authentication
 export const NO_AUTH_ROUTES = ["/", "/login", "/reset-password"];
