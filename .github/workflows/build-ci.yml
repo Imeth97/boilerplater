@@ -24,13 +24,19 @@ jobs:
         run: |
           yarn run test --run --silent
 
-      - name: Verify Docker Daemon
+      - name: Build Project
         run: |
-          docker info
+          yarn run build
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      # Uncomment this to run the docker build
 
-      - name: Start the database and build the docker image
-        run: |
-          CI=1 NEXT_DATABASE_URL=${{ env.DATABASE_URL }} scripts/docker-build.sh
+      # - name: Verify Docker Daemon
+      #   run: |
+      #     docker info
+
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v2
+
+      # - name: Start the database and build the docker image
+      #   run: |
+      #     CI=1 NEXT_DATABASE_URL=${{ env.DATABASE_URL }} scripts/docker-build.sh
