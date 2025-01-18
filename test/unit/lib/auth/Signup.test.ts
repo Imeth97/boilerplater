@@ -5,7 +5,7 @@ import Signup from "@/lib/auth/Signup";
 import {
   constructConfirmationUrl,
   constructHashedPassword,
-} from "@/lib/auth/utils";
+} from "@/lib/auth/server.utils";
 import { sendMail } from "@/lib/email/sendEmail";
 import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
@@ -38,12 +38,14 @@ vi.mock("@/lib/auth/Login", () => ({
   default: vi.fn(),
 }));
 
-vi.mock("@/lib/auth/utils", () => ({
+vi.mock("@/lib/auth/server.utils", () => ({
   constructConfirmationUrl: vi.fn(),
   constructHashedPassword: vi.fn(),
 }));
 
 describe("Signup function", () => {
+  const strongPassword = "StrongP@ssw0rd!";
+  const weakPassword = "weakpassword";
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -53,7 +55,7 @@ describe("Signup function", () => {
       email: "existing@example.com",
     });
 
-    const response = await Signup("existing@example.com", "password123");
+    const response = await Signup("existing@example.com", strongPassword);
 
     expect(response).toEqual({ success: false, error: "User already exists" });
     expect(db.query.user.findFirst).toHaveBeenCalledWith({
@@ -70,7 +72,7 @@ describe("Signup function", () => {
       }),
     });
 
-    const response = await Signup("newuser@example.com", "password123");
+    const response = await Signup("newuser@example.com", strongPassword);
 
     expect(response).toEqual({
       success: false,
@@ -93,7 +95,7 @@ describe("Signup function", () => {
     );
     (sendMail as Mock).mockResolvedValueOnce(false);
 
-    const response = await Signup("newuser@example.com", "password123");
+    const response = await Signup("newuser@example.com", strongPassword);
 
     expect(response).toEqual({ success: false, error: "Failed to send email" });
     expect(sendMail).toHaveBeenCalledWith({
@@ -120,9 +122,15 @@ describe("Signup function", () => {
     (sendMail as Mock).mockResolvedValueOnce(true);
     (Login as Mock).mockResolvedValueOnce({ success: true });
 
-    const response = await Signup("newuser@example.com", "password123");
+    const response = await Signup("newuser@example.com", strongPassword);
 
     expect(response).toEqual({ success: true });
-    expect(Login).toHaveBeenCalledWith("newuser@example.com", "password123");
+    expect(Login).toHaveBeenCalledWith("newuser@example.com", strongPassword);
+  });
+
+  it("returns error if password is weak", async () => {
+    const response = await Signup("newuser@example.com", weakPassword);
+
+    expect(response).toEqual({ success: false, error: "Password is invalid" });
   });
 });

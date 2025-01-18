@@ -1,5 +1,5 @@
 import { ChangePasswordBtn } from "@/components/auth/Auth";
-import { getUserDetails } from "@/lib/auth/utils";
+import { getUserDetails } from "@/lib/auth/server.utils";
 import { redirect } from "next/navigation";
 
 const BoldSpan = ({ name }: { name: string }) => {
@@ -42,7 +42,7 @@ const Dashboard = async () => {
               {userDetails?.emailVerified ? (
                 <ChangePasswordBtn
                   email={userDetails.email || ""}
-                  label="Set Password"
+                  label="Change Password"
                 />
               ) : (
                 "Please check the user's email for a verification link."

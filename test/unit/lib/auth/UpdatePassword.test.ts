@@ -37,7 +37,7 @@ vi.mock("@/lib/auth/Logout", () => ({
   Logout: vi.fn(),
 }));
 
-vi.mock("@/lib/auth/utils", () => ({
+vi.mock("@/lib/auth/server.utils", () => ({
   constructHashedPassword: vi.fn(),
 }));
 
@@ -46,10 +46,12 @@ import { user } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { Logout } from "@/lib/auth/Logout";
 import { UpdatePassword } from "@/lib/auth/UpdatePassword";
-import { constructHashedPassword } from "@/lib/auth/utils";
+import { constructHashedPassword } from "@/lib/auth/server.utils";
 import { eq } from "drizzle-orm";
 
 describe("UpdatePassword", () => {
+  const strongPassword = "StrongP@ssw0rd!";
+  const weakPassword = "weakpassword";
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -64,10 +66,10 @@ describe("UpdatePassword", () => {
     (eq as Mock).mockReturnValueOnce("eq-result");
     (auth as Mock).mockResolvedValueOnce({ id: "user-123" });
 
-    const response = await UpdatePassword("new-password", token);
+    const response = await UpdatePassword(strongPassword, token);
 
     expect(response).toEqual({ success: true });
-    expect(constructHashedPassword).toHaveBeenCalledWith("new-password");
+    expect(constructHashedPassword).toHaveBeenCalledWith(strongPassword);
     expect(eq).toHaveBeenCalledWith(user.id, "user-123");
     expect(db.update).toHaveBeenCalledWith(user);
 
@@ -85,10 +87,10 @@ describe("UpdatePassword", () => {
     (eq as Mock).mockReturnValueOnce("eq-result");
     (auth as Mock).mockResolvedValueOnce(null);
 
-    const response = await UpdatePassword("another-password", token);
+    const response = await UpdatePassword(strongPassword, token);
 
     expect(response).toEqual({ success: true });
-    expect(constructHashedPassword).toHaveBeenCalledWith("another-password");
+    expect(constructHashedPassword).toHaveBeenCalledWith(strongPassword);
     expect(eq).toHaveBeenCalledWith(user.id, "user-456");
     expect(db.update).toHaveBeenCalledTimes(1);
     expect(Logout).not.toHaveBeenCalled();
@@ -98,7 +100,7 @@ describe("UpdatePassword", () => {
     const invalidSecret = "wrong-secret";
     const token = jwt.sign({ userId: "xyz" }, invalidSecret);
 
-    const response = await UpdatePassword("irrelevant-password", token);
+    const response = await UpdatePassword(strongPassword, token);
 
     expect(response).toEqual({
       success: false,
@@ -107,5 +109,11 @@ describe("UpdatePassword", () => {
     expect(constructHashedPassword).not.toHaveBeenCalled();
     expect(db.update).not.toHaveBeenCalled();
     expect(Logout).not.toHaveBeenCalled();
+  });
+
+  it("returns error if password is weak", async () => {
+    const response = await UpdatePassword(weakPassword, "valid-token");
+
+    expect(response).toEqual({ success: false, error: "Password is invalid" });
   });
 });

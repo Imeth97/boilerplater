@@ -1,6 +1,6 @@
 import db from "@/db/db";
 import { ResetPassword } from "@/lib/auth/ResetPassword";
-import { constructPasswordResetUrl } from "@/lib/auth/utils";
+import { constructPasswordResetUrl } from "@/lib/auth/server.utils";
 import { sendMail } from "@/lib/email/sendEmail";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
@@ -19,7 +19,7 @@ vi.mock("@/lib/email/sendEmail", () => ({
   sendMail: vi.fn(),
 }));
 
-vi.mock("@/lib/auth/utils", () => ({
+vi.mock("@/lib/auth/server.utils", () => ({
   constructPasswordResetUrl: vi.fn(),
 }));
 
