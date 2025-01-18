@@ -22,5 +22,5 @@ jobs:
           git fetch origin
           git checkout release/vercel-neon
           git pull -r
-          git merge origin/main 
+          git rebase origin/main
           git push origin release/vercel-neon
