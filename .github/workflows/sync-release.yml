@@ -1,0 +1,25 @@
+name: Sync main to release/vercel-neon
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync changes to release/vercel-neon
+        run: |
+          git fetch origin
+          git checkout release/vercel-neon
+          git merge main --no-edit
+          git push origin release/vercel-neon
