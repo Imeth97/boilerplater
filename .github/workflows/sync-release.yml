@@ -20,6 +20,6 @@ jobs:
       - name: Sync changes to release/vercel-neon
         run: |
           git fetch origin
-          git checkout release/vercel-neon
+          git checkout origin/release/vercel-neon
           git merge main 
           git push origin release/vercel-neon
