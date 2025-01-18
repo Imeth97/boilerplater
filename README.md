@@ -2,7 +2,8 @@
 The only changes needed are: 
 1. Install the @neondatabase/serverless package
 2. Change the db client to neon. See src/db/db.ts & copy this file as needed.
-3. Add the correct db URLs to your .env file in your production environment (+ locally if you want to connect to the db from your local env). 
+3. Add the correct db URLs to your .env file in your production environment (+ locally if you want to connect to the db from your local env).
+See more information here: [Drizzle-Neon integration](https://orm.drizzle.team/docs/tutorials/drizzle-with-neon)
 
 # Boilerplater
 
