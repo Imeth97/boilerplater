@@ -1,4 +1,4 @@
-name: CI Docker Build
+name: Build/CI
 
 env:
   DATABASE_URL: postgresql://myuser:mypassword@localhost:5432/mydb
