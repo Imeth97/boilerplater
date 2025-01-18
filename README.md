@@ -1,3 +1,9 @@
+# THIS BRANCH CONTAINS THE CHANGES TO DEPLOY TO VERCEL WITH NEON AS THE DATABASE. 
+The only changes needed are: 
+1. Install the @neondatabase/serverless package
+2. Change the db client to neon. See src/db/db.ts & copy this file as needed.
+3. Add the correct db URLs to your .env file in your production environment (+ locally if you want to connect to the db from your local env). 
+
 # Boilerplater
 
 Next.js boilerplate that comes set up with a full postgres database integration (using drizzle) and a full NextAuth credentials implementation (the entire flow, with email confirmation etc.).
