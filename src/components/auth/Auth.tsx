@@ -23,6 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import Login from "@/lib/auth/Login";
 import { Logout } from "@/lib/auth/Logout";
 import { ResetPassword } from "@/lib/auth/ResetPassword";
+import { passwordSchema } from "@/lib/auth/shared.utils";
 import Signup from "@/lib/auth/Signup";
 import { UpdatePassword } from "@/lib/auth/UpdatePassword";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
@@ -233,9 +234,7 @@ interface NewPasswordFormProps {
 }
 
 const newPasswordFormSchema = z.object({
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
+  password: passwordSchema,
 });
 
 export function NewPasswordForm({ token }: NewPasswordFormProps) {
@@ -327,9 +326,7 @@ const signupFormSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
+  password: passwordSchema,
 });
 
 function EmailSignUpForm() {

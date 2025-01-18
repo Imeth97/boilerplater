@@ -6,8 +6,13 @@ import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
 import { auth } from ".";
 import { Logout } from "./Logout";
-import { constructHashedPassword } from "./utils";
+import { constructHashedPassword } from "./server.utils";
+import { passwordSchema } from "./shared.utils";
+
 export const UpdatePassword = async (password: string, token: string) => {
+  if (!passwordSchema.safeParse(password).success) {
+    return { success: false, error: "Password is invalid" };
+  }
   try {
     const decoded = jwt.verify(token, process.env.EMAIL_PASSWORD_RESET_SECRET!);
     const { userId } = decoded as { userId: string };

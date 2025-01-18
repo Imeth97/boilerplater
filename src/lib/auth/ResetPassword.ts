@@ -4,8 +4,8 @@ import db from "@/db/db";
 import { user } from "@/db/schema";
 import { sendMail } from "@/lib/email/sendEmail";
 import { eq } from "drizzle-orm";
+import { constructPasswordResetUrl } from "./server.utils";
 import { AuthResponse } from "./typings/auth";
-import { constructPasswordResetUrl } from "./utils";
 
 export const ResetPassword = async (email: string): Promise<AuthResponse> => {
   const userToReset = await db
