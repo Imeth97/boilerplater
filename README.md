@@ -1,5 +1,13 @@
 # Boilerplater
 
+Run:
+
+```bash
+npx next-auth-saas-base
+```
+
+to get started.
+
 Next.js boilerplate that comes set up with a full postgres database integration (using drizzle) and a full NextAuth credentials implementation (the entire flow, with email confirmation etc.).
 See below for more details + how to clone and run the boilerplate.
 
@@ -15,7 +23,8 @@ See below for more details + how to clone and run the boilerplate.
 
   - Full email and password (credentials provider) implementation with sessions.
   - Email confirmation and password reset with JWT.
-  - Implementation alongside OAuth providers with account clash handling.
+  - Implementation alongside OAuth providers with account clash handling. A Github implementation is included and can be setup with the AUTH_GITHUB_ID and AUTH_GITHUB_SECRET env variables.
+    - See more details [here](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
   - [Nodemailer](https://nodemailer.com/) for email sending.
   - [NextAuth Documentation](https://next-auth.js.org/).
 
