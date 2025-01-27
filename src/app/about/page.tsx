@@ -6,10 +6,10 @@ export default function About() {
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md text-center">
         <h1 className="text-2xl font-bold text-gray-800">Boilerplater</h1>
         <div className="text-gray-600">
-          Look's like you've got the boilerplate running. Nothing more should be
-          needed, however to get the github OAuth to work, you'll need to add
-          the AUTH_GITHUB_ID and AUTH_GITHUB_SECRET to the .env file. See more
-          details{" "}
+          Look&apos;s like you&apos;ve got the boilerplate running. Nothing more
+          should be needed, however to get the github OAuth to work, you&apos;ll
+          need to add the AUTH_GITHUB_ID and AUTH_GITHUB_SECRET to the .env
+          file. See more details{" "}
           <Link
             href={
               "https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app"
