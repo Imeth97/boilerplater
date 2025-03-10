@@ -1,13 +1,4 @@
 # Boilerplater
-
-Run:
-
-```bash
-npx next-auth-saas-base
-```
-
-to get started.
-
 Next.js boilerplate that comes set up with a full postgres database integration (using drizzle) and a full NextAuth credentials implementation (the entire flow, with email confirmation etc.).
 See below for more details + how to clone and run the boilerplate.
 
