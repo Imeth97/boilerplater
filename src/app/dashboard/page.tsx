@@ -1,6 +1,6 @@
 import { ChangePasswordBtn } from "@/components/auth/Auth";
+import WithRouteProtection from "@/components/auth/WithRouteProtection";
 import { getUserDetails } from "@/lib/auth/server.utils";
-import { redirect } from "next/navigation";
 
 const BoldSpan = ({ name }: { name: string }) => {
   return (
@@ -10,13 +10,10 @@ const BoldSpan = ({ name }: { name: string }) => {
   );
 };
 
-const Dashboard = async () => {
+const DashboardContent = async () => {
   const userDetails = await getUserDetails();
 
-  if (!userDetails) {
-    return redirect("/");
-  }
-
+  // At this point, we know the user is authenticated due to WithRouteProtection
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md text-center">
@@ -25,7 +22,7 @@ const Dashboard = async () => {
         </h1>
         <div className="mt-2 text-gray-600">
           The currently signed-in user is{" "}
-          <BoldSpan name={userDetails.name || "Unknown User"} />.
+          <BoldSpan name={userDetails!.name || "Unknown User"} />.
           <br />
           {!!userDetails?.provider ? (
             <div>
@@ -52,6 +49,14 @@ const Dashboard = async () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const Dashboard = async () => {
+  return (
+    <WithRouteProtection redirectTo="/login">
+      <DashboardContent />
+    </WithRouteProtection>
   );
 };
 
