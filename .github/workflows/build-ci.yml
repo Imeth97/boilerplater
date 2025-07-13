@@ -24,6 +24,15 @@ jobs:
         run: |
           yarn run test --run --silent
 
+      - name: Run E2E Tests
+        run: |
+          NEXT_DATABASE_URL=postgresql://myuser:mypassword@localhost:5432/mydb yarn run test:e2e:full
+
+      - name: Stop and Remove Test Database
+        run: |
+          docker stop boilerplater-db || true
+          docker rm boilerplater-db || true
+
       - name: Start Database
         run: |
           scripts/startDB.sh
