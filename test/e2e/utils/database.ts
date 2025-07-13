@@ -1,10 +1,12 @@
-import { account, session, user } from "@/db/schema";
 import * as schema from "@/db/schema";
-import { drizzle } from "drizzle-orm/node-postgres";
+import { account, session, user } from "@/db/schema";
+import { drizzle, NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Client } from "pg";
 
 let testClient: Client;
-let testDb: ReturnType<typeof drizzle>;
+let testDb: NodePgDatabase<typeof schema> & {
+  $client: Client;
+};
 
 const TEST_DATABASE_URL =
   process.env.TEST_DATABASE_URL ||
@@ -13,11 +15,11 @@ const TEST_DATABASE_URL =
 export async function setupTestDatabase() {
   // Connect to test database
   console.log("Using TEST_DATABASE_URL:", TEST_DATABASE_URL);
-  
+
   testClient = new Client({
     connectionString: TEST_DATABASE_URL,
     // Explicitly set password to ensure it's a string
-    password: "postgres"
+    password: "postgres",
   });
 
   await testClient.connect();
