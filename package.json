@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "docker-build": "./scripts/docker-build.sh",
-    "test": "vitest",
+    "test": "vitest test/unit",
     "test:e2e": "vitest run --config vitest.e2e.config.mts",
     "test:e2e:full": "./scripts/run-e2e-tests.sh"
   },
