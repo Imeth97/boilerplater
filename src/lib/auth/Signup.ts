@@ -3,12 +3,11 @@ import db from "@/db/db";
 import { user } from "@/db/schema";
 import { sendMail } from "@/lib/email/sendEmail";
 import { eq } from "drizzle-orm";
-import Login from "./Login";
+import { passwordSchema } from "./shared.utils";
 import {
   constructConfirmationUrl,
   constructHashedPassword,
-} from "./server.utils";
-import { passwordSchema } from "./shared.utils";
+} from "./test-utils";
 import { AuthResponse } from "./typings/auth";
 
 async function Signup(
@@ -58,8 +57,31 @@ async function Signup(
     return { success: false, error: "Failed to send email" };
   }
 
-  // sign in the user
-  return await Login(email, password);
+  // todo - double check this is correct
+  // sign in the user via API endpoint
+  try {
+    const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+    const response = await fetch(`${baseUrl}/api/auth/signin/credentials`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+        redirect: false,
+      }),
+    });
+
+    if (response.ok) {
+      return { success: true };
+    } else {
+      return { success: false, error: "Failed to sign in" };
+    }
+  } catch (error) {
+    console.error("Error during signin:", error);
+    return { success: false, error: "Failed to sign in" };
+  }
 }
 
 export default Signup;

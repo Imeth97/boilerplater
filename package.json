@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "docker-build": "./scripts/docker-build.sh",
-    "test": "vitest"
+    "test:unit": "vitest test/unit --run",
+    "test:e2e": "vitest test/e2e --run"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.7.4",
