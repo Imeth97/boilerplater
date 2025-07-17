@@ -1,6 +1,5 @@
 // @vitest-environment node
 
-import Signup from "@/lib/auth/Signup";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { cleanupTestUser, getUserByEmail } from "../utils/db.utils";
 import {
@@ -8,6 +7,23 @@ import {
   extractSignupLink,
   waitForEmail,
 } from "../utils/email";
+
+async function signupViaAPI(email: string, password: string, username: string) {
+  const response = await fetch("http://localhost:3000/api/auth/signup", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      username,
+    }),
+  });
+
+  const data = await response.json();
+  return data;
+}
 
 describe("Signup E2E Tests", () => {
   const testEmail = "test@localhost.com";
@@ -30,8 +46,8 @@ describe("Signup E2E Tests", () => {
 
   describe("Positive Flow", () => {
     it("should complete full signup flow with email confirmation", async () => {
-      // Step 1: Execute signup function
-      const signupResult = await Signup(testEmail, testPassword, testUsername);
+      // Step 1: Execute signup via API
+      const signupResult = await signupViaAPI(testEmail, testPassword, testUsername);
 
       // Step 2: Verify signup was successful
       expect(signupResult.success).toBe(true);
@@ -66,18 +82,18 @@ describe("Signup E2E Tests", () => {
   describe("Negative Flows", () => {
     it("should fail when trying to signup with existing email", async () => {
       // First signup
-      const firstSignup = await Signup(testEmail, testPassword, testUsername);
+      const firstSignup = await signupViaAPI(testEmail, testPassword, testUsername);
       expect(firstSignup.success).toBe(true);
 
       // Second signup with same email should fail
-      const secondSignup = await Signup(testEmail, testPassword, testUsername);
+      const secondSignup = await signupViaAPI(testEmail, testPassword, testUsername);
       expect(secondSignup.success).toBe(false);
       expect(secondSignup.error).toBe("User already exists");
     });
 
     it("should fail with invalid password", async () => {
       const weakPassword = "weak";
-      const signupResult = await Signup(testEmail, weakPassword, testUsername);
+      const signupResult = await signupViaAPI(testEmail, weakPassword, testUsername);
 
       expect(signupResult.success).toBe(false);
       expect(signupResult.error).toBe("Password is invalid");
@@ -88,7 +104,7 @@ describe("Signup E2E Tests", () => {
     });
 
     it("should fail with empty email", async () => {
-      const signupResult = await Signup("", testPassword, testUsername);
+      const signupResult = await signupViaAPI("", testPassword, testUsername);
 
       expect(signupResult.success).toBe(false);
       expect(signupResult.error).toBe("Email is required");
@@ -99,7 +115,7 @@ describe("Signup E2E Tests", () => {
     });
 
     it("should fail with null email", async () => {
-      const signupResult = await Signup(
+      const signupResult = await signupViaAPI(
         null as any,
         testPassword,
         testUsername
@@ -110,7 +126,7 @@ describe("Signup E2E Tests", () => {
     });
 
     it("should fail with undefined email", async () => {
-      const signupResult = await Signup(
+      const signupResult = await signupViaAPI(
         undefined as any,
         testPassword,
         testUsername

@@ -20,11 +20,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { useSignup } from "@/hooks/useSignup";
 import Login from "@/lib/auth/Login";
 import { Logout } from "@/lib/auth/Logout";
 import { ResetPassword } from "@/lib/auth/ResetPassword";
 import { passwordSchema } from "@/lib/auth/shared.utils";
-import Signup from "@/lib/auth/Signup";
 import { UpdatePassword } from "@/lib/auth/UpdatePassword";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
@@ -330,9 +330,9 @@ const signupFormSchema = z.object({
 });
 
 function EmailSignUpForm() {
-  const [pending, setPending] = useState(false);
   const [error, setError] = useState(false);
   const router = useRouter();
+  const signupMutation = useSignup();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof signupFormSchema>>({
@@ -343,17 +343,29 @@ function EmailSignUpForm() {
   async function onSubmitSignIn(values: z.infer<typeof signupFormSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    setPending(true);
-    const res = await Signup(values.email, values.password, values.name);
-    if (!res.success) {
-      setPending(false);
-      setError(true);
-      return;
-    }
-    // navigate to dashboard with a refresh
-    router.refresh();
-    router.push("/dashboard");
-    return;
+    setError(false);
+    
+    signupMutation.mutate(
+      {
+        email: values.email,
+        password: values.password,
+        username: values.name,
+      },
+      {
+        onSuccess: (data) => {
+          if (data.success) {
+            // navigate to dashboard with a refresh
+            router.refresh();
+            router.push("/dashboard");
+          } else {
+            setError(true);
+          }
+        },
+        onError: () => {
+          setError(true);
+        },
+      }
+    );
   }
 
   return (
@@ -431,7 +443,7 @@ function EmailSignUpForm() {
         />
         <div className="flex flex-col mx-12">
           <Button className="my-3" type="submit">
-            {pending ? (
+            {signupMutation.isPending ? (
               <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
             ) : (
               "Sign up"
