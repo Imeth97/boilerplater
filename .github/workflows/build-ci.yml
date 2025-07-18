@@ -58,8 +58,8 @@ jobs:
       - name: Cleanup
         if: always()
         run: |
-          docker-compose down
-          docker-compose rm -f
+          docker compose down
+          docker compose rm -f
 
       # Uncomment this to run the docker build
 

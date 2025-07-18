@@ -10,13 +10,13 @@ if ! docker info > /dev/null 2>&1; then
     exit 1
 fi
 
-# Start PostgreSQL and SMTP server using docker-compose
-echo "Starting PostgreSQL and SMTP server using docker-compose..."
-docker-compose up -d db smtp
+# Start PostgreSQL and SMTP server using docker compose
+echo "Starting PostgreSQL and SMTP server using docker compose..."
+docker compose up -d db smtp
 
 # Wait for PostgreSQL to be ready using healthcheck
 echo "Waiting for PostgreSQL to start..."
-until docker-compose exec -T db pg_isready -U myuser -d mydb > /dev/null 2>&1; do
+until docker compose exec -T db pg_isready -U myuser -d mydb > /dev/null 2>&1; do
     sleep 1
 done
 
