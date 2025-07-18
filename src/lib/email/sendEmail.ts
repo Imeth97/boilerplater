@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   service: SMTP_SERVICE || undefined,
   host: SMTP_SERVER_HOST,
   port: Number(SMTP_SERVER_PORT),
-  secure: SMTP_SERVER_PORT === "465", // don't use SSL on local greenmail setup
+  secure: SMTP_SERVER_HOST !== "localhost", // don't use SSL on local greenmail setup
   auth:
     SMTP_SERVER_USERNAME && SMTP_SERVER_PASSWORD
       ? {

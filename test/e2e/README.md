@@ -15,13 +15,15 @@ Before running the e2e tests, ensure you have the following running:
 Run the following commands in separate terminals:
 
 ### Terminal 1: Start Database and Greenmail
+
 ```bash
-npm run dev-all
+yarn run dev-all
 ```
 
 ### Terminal 2: Run E2E Tests
+
 ```bash
-npm run test:e2e
+yarn run test:e2e
 ```
 
 ## Manual Setup
@@ -29,23 +31,29 @@ npm run test:e2e
 If you prefer to start services manually:
 
 ### 1. Start Database
+
 ```bash
 ./scripts/startDB-compose.sh
 ```
 
 ### 2. Start Next.js Dev Server
+
 ```bash
-npm run dev
+yarn run dev
 ```
 
 ### 3. Run E2E Tests
+
 ```bash
-npm run test:e2e
+yarn run test:e2e
 ```
 
 ## What the Tests Cover
 
+- Before each of the tests we make a new greenMail user
+
 ### Positive Flow Test
+
 - Creates a user using the Signup function
 - Verifies user is created in database with unverified email
 - Extracts the confirmation link from the email using `scripts/mail/extract-signup-link.sh`
@@ -53,6 +61,7 @@ npm run test:e2e
 - Verifies the email is now confirmed in the database
 
 ### Negative Flow Tests
+
 - Duplicate email signup attempts
 - Invalid password formats
 - Empty/null/undefined email validation

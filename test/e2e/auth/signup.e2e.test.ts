@@ -26,6 +26,11 @@ async function signupViaAPI(email: string, password: string, username: string) {
   return data;
 }
 
+/**
+ * Note: We have to make a new greenmail user for each test
+ * Because greenmail seems to have a bug when you create and delete the same user
+ * repeatedly
+ */
 describe("Signup E2E Tests", () => {
   const testEmail = "test@localhost.com";
   const testLogin = "test";
