@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
-import * as schema from "./schema";
 import { Client } from "pg";
+import * as schema from "./schema";
 
 const client = new Client({
   connectionString: process.env.NEXT_DATABASE_URL,

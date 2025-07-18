@@ -1,4 +1,5 @@
 import Navbar from "@/components/nav/Navbar";
+import QueryProvider from "@/components/providers/QueryClientProvider";
 import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
@@ -30,9 +31,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
-        {children}
-        <Toaster />
+        <QueryProvider>
+          <Navbar />
+          {children}
+          <Toaster />
+        </QueryProvider>
       </body>
     </html>
   );

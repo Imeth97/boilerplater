@@ -2,18 +2,22 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Important Notes
+
+**Package Manager**: This project uses **YARN ONLY**. Always use `yarn` commands instead of `npm` for all package management tasks.
+
 ## Development Commands
 
-- `npm run dev-all` - Full development setup: generates .env file, starts PostgreSQL container, and runs Next.js dev server
-- `npm run dev` - Start Next.js development server only (requires existing database)
-- `npm run build` - Build production version of the application
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint for code linting
-- `npm test` - Run unit tests with Vitest
-- `npm test -- --run` - Run tests once without watch mode
-- `npm test -- <test-file-pattern>` - Run specific tests (e.g., `npm test -- Login.test.ts`)
-- `npx drizzle-kit generate` - Generate database migrations
-- `npx drizzle-kit migrate` - Apply database migrations
+- `yarn run dev-all` - Full development setup: generates .env file, starts PostgreSQL container, and runs Next.js dev server
+- `yarn run dev` - Start Next.js development server only (requires existing database)
+- `yarn run build` - Build production version of the application
+- `yarn run start` - Start production server
+- `yarn run lint` - Run ESLint for code linting
+- `yarn test` - Run unit tests with Vitest
+- `yarn test -- --run` - Run tests once without watch mode
+- `yarn test -- <test-file-pattern>` - Run specific tests (e.g., `yarn test -- Login.test.ts`)
+- `yarn dlx drizzle-kit generate` - Generate database migrations
+- `yarn dlx drizzle-kit migrate` - Apply database migrations
 - `./scripts/startDB.sh --re-seed` - Start database with seeding
 
 ## Architecture Overview

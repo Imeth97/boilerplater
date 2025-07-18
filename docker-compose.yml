@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14
+    container_name: my-postgres-container
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  smtp:
+    image: greenmail/standalone:2.0.1
+    container_name: greenmail-smtp
+    ports:
+      - "3025:3025"  # SMTP
+      - "3110:3110"  # POP3
+      - "3143:3143"  # IMAP
+      - "3465:3465"  # SMTPS
+      - "3993:3993"  # IMAPS
+      - "3995:3995"  # POP3S
+      - "8080:8080"  # Web interface
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 5 bash -c '</dev/tcp/localhost/3025' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
