@@ -22,7 +22,7 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          yarn run test --run --silent
+          yarn run test:unit
 
       - name: Start Database and SMTP Server
         run: |
