@@ -1,3 +1,4 @@
+[![Build/CI](https://github.com/Imeth97/boilerplater/actions/workflows/build-ci.yml/badge.svg)](https://github.com/Imeth97/boilerplater/actions/workflows/build-ci.yml)
 # Boilerplater
 Next.js boilerplate that comes set up with a full postgres database integration (using drizzle) and a full NextAuth credentials implementation (the entire flow, with email confirmation etc.).
 See below for more details + how to clone and run the boilerplate.
