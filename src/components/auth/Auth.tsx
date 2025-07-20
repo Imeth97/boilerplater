@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useSignup } from "@/hooks/useSignup";
-import Login from "@/lib/auth/Login";
-import { Logout } from "@/lib/auth/Logout";
+import { useLogin } from "@/hooks/useLogin";
+import { useLogout } from "@/hooks/useLogout";
 import { ResetPassword } from "@/lib/auth/ResetPassword";
 import { passwordSchema } from "@/lib/auth/shared.utils";
 import { UpdatePassword } from "@/lib/auth/UpdatePassword";
@@ -44,36 +44,46 @@ const loginFormSchema = z.object({
 });
 
 function EmailSignInForm() {
-  const [pending, setPending] = useState(false);
   const [error, setError] = useState(false);
+  const router = useRouter();
+  const loginMutation = useLogin();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
   });
 
-  const router = useRouter();
-
   // 2. Define a submit handler.
   async function onSubmitSignIn(values: z.infer<typeof loginFormSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    setPending(true);
-    const res = await Login(values.email, values.password);
-    if (!!res.redirect) {
-      router.refresh();
-      router.push(res.redirect);
-      return;
-    }
-    if (!res.success) {
-      setPending(false);
-      setError(true);
-      return;
-    }
-
-    // navigate to dashboard with a refresh
-    router.refresh();
-    router.push("/dashboard");
+    setError(false);
+    
+    loginMutation.mutate(
+      {
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onSuccess: (data) => {
+          if (!!data.redirect) {
+            router.refresh();
+            router.push(data.redirect);
+            return;
+          }
+          if (data.success) {
+            // navigate to dashboard with a refresh
+            router.refresh();
+            router.push("/dashboard");
+          } else {
+            setError(true);
+          }
+        },
+        onError: () => {
+          setError(true);
+        },
+      }
+    );
   }
 
   return (
@@ -132,7 +142,7 @@ function EmailSignInForm() {
         />
         <div className="flex flex-col mx-12">
           <Button className="my-3" type="submit">
-            {pending ? (
+            {loginMutation.isPending ? (
               <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
             ) : (
               "Sign in"
@@ -621,15 +631,26 @@ export const ChangePasswordBtn = ({
 };
 
 export const SignOutBtn = () => {
-  const [isPending, setIsPending] = useState<boolean>(false);
+  const logoutMutation = useLogout();
 
   async function handleSignOut() {
     console.log("signing out");
-    setIsPending(true);
-    await Logout("/");
+    logoutMutation.mutate(
+      {
+        redirectTo: "/",
+      },
+      {
+        onSuccess: () => {
+          // Logout successful, NextAuth will handle the redirect
+        },
+        onError: (error) => {
+          console.error("Logout failed:", error);
+        },
+      }
+    );
   }
 
-  if (isPending) {
+  if (logoutMutation.isPending) {
     return <Loader2 className="h-8 w-8 animate-spin text-slate-300" />;
   }
 

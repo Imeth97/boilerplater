@@ -9,7 +9,6 @@ import {
 } from "@/lib/auth/test-utils";
 import { AuthResponse } from "@/lib/auth/typings/auth";
 import { NextRequest, NextResponse } from "next/server";
-import Login from "@/lib/auth/Login";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
@@ -77,15 +76,32 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Sign in the user via server action
-    const loginResult = await Login(email, password);
-    
-    if (loginResult.success) {
+    // Sign in the user via login API
+    try {
+      const loginResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (loginResponse.ok) {
+        const loginResult = await loginResponse.json();
+        if (loginResult.success) {
+          return NextResponse.json(
+            { success: true } as AuthResponse,
+            { status: 200 }
+          );
+        }
+      }
+      
       return NextResponse.json(
-        { success: true } as AuthResponse,
-        { status: 200 }
+        { success: false, error: "Failed to sign in" } as AuthResponse,
+        { status: 500 }
       );
-    } else {
+    } catch (loginError) {
+      console.error("Login error during signup:", loginError);
       return NextResponse.json(
         { success: false, error: "Failed to sign in" } as AuthResponse,
         { status: 500 }

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # E2E Tests
 
-The e2e directory contains end-to-end tests for the signup flow that test the actual server-side functions without mocking.
+The e2e directory contains end-to-end tests for comprehensive authentication flows that test the actual server-side functions without mocking.
 
 ## Prerequisites
 
@@ -48,28 +48,49 @@ yarn test:e2e
 
 ## What the Tests Cover
 
-- Before each of the tests we make a new greenMail user
+The e2e tests comprehensively cover both signup and login authentication flows with positive and negative test cases.
 
-### Positive Flow Test
+### Authentication Flow Positive Tests
 
-- Creates a user using the Signup function
+**Signup + Login Flow**:
+- Creates a user using the Signup API endpoint
 - Verifies user is created in database with unverified email
 - Extracts the confirmation link from the email using `scripts/mail/extract-signup-link.sh`
-- Confirms the email via HTTP request to the confirmation endpoint
-- Verifies the email is now confirmed in the database
+- Tests successful login with correct credentials immediately after signup
+- Validates proper HTTP status codes and response structure
 
-### Negative Flow Tests
+### Authentication Flow Negative Tests
 
+**Signup Negative Tests**:
 - Duplicate email signup attempts
-- Invalid password formats
+- Invalid password formats (weak passwords)
 - Empty/null/undefined email validation
 - Database state verification for failed signups
 
+**Login Negative Tests**:
+- Login with incorrect password for existing user
+- Login with non-existent email address
+- Input validation for empty/null/undefined email
+- Input validation for empty/null/undefined password
+- Proper error message and HTTP status code validation
+- Authentication failure handling (returns 400/401 depending on failure type)
+
 ## Test Structure
 
-- `test/e2e/auth/signup.e2e.test.ts` - Main test file
-- `test/e2e/utils/db.ts` - Database helper utilities
-- `test/e2e/utils/email.ts` - Email helper utilities
+- `test/e2e/auth/auth-flow.e2e.test.ts` - Main authentication flow test file
+- `test/e2e/utils/db.utils.ts` - Database helper utilities for user management
+- `test/e2e/utils/email.ts` - Email helper utilities for confirmation link extraction
+
+## Test Helper Functions
+
+**API Testing Functions**:
+- `signupViaAPI(email, password, username)` - Tests signup endpoint with proper response validation
+- `loginViaAPI(email, password)` - Tests login endpoint with proper response validation
+
+**Test Structure**:
+- **Positive Flow**: Complete signup → login flow with email confirmation
+- **Negative Flows**: Comprehensive error handling for both signup and login operations
+- **Login Negative Flows**: Dedicated test suite for login-specific validation and authentication failures
 
 ## Notes
 
@@ -77,6 +98,12 @@ yarn test:e2e
 - No mocking is used - tests run against real database, email server, and HTTP endpoints
 - Tests automatically clean up test data before and after each test
 - The Greenmail server is used for email testing without sending actual emails
+- **IMPORTANT**: Always follow the 3-step e2e testing workflow:
+  1. Run `yarn reset-environment` (answer "Y" when prompted)
+  2. Run `yarn build && yarn start &` (production server in background)
+  3. Run `yarn test:e2e`
+- Both helper functions return `{ data, status }` objects for comprehensive response validation
+- Tests cover both API endpoint functionality and proper HTTP status code validation
 
 # Unit Tests
 
