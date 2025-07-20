@@ -47,11 +47,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    await signIn("credentials", {
+    const result = await signIn("credentials", {
       redirect: false,
       email: email ?? "",
       password: password ?? "",
     });
+
+    // Check if authentication was successful
+    if (result?.error) {
+      return NextResponse.json(
+        { success: false, error: "Authentication failed" } as AuthResponse,
+        { status: 401 }
+      );
+    }
 
     return NextResponse.json(
       { success: true } as AuthResponse,

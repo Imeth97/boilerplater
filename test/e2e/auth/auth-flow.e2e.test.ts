@@ -243,8 +243,7 @@ describe("Authentication E2E Tests", () => {
           "WrongPassword123!"
         );
         expect(loginResult.data.success).toBe(false);
-        // May return 400 or 401 depending on database query failure
-        expect([400, 401]).toContain(loginResult.status);
+        expect(loginResult.status).toBe(401);
         expect(loginResult.data.error).toBe("Authentication failed");
       });
 
@@ -254,8 +253,7 @@ describe("Authentication E2E Tests", () => {
           "ValidPassword123"
         );
         expect(loginResult.data.success).toBe(false);
-        // May return 400 or 401 depending on database query failure
-        expect([400, 401]).toContain(loginResult.status);
+        expect(loginResult.status).toBe(401);
         expect(loginResult.data.error).toBe("Authentication failed");
       });
 
