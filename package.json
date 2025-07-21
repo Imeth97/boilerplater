@@ -10,6 +10,7 @@
     "lint": "next lint",
     "docker-build": "./scripts/docker-build.sh",
     "reset-environment": "./scripts/reset-environment.sh",
+    "create-greenmail-user": "./scripts/mail/create-greenmail-user.sh",
     "test:unit": "vitest test/unit --run",
     "test:e2e": "dotenv -e .env -- vitest test/e2e --run"
   },

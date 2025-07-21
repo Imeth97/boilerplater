@@ -1,10 +1,17 @@
 #!/bin/bash
 
+# Usage: ./extract-signup-link.sh <username> <password>
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <username> <password>"
+    echo "Example: $0 testuser secret"
+    exit 1
+fi
+
 # Config
 IMAP_HOST="localhost"
 IMAP_PORT="3143"
-USERNAME="test"
-PASSWORD="secret"
+USERNAME="$1"
+PASSWORD="$2"
 
 # Fetch the full message
 EMAIL_RAW=$( (echo "a1 LOGIN $USERNAME $PASSWORD";

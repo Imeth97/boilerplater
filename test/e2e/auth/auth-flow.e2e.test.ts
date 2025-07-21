@@ -53,16 +53,6 @@ describe("Authentication E2E Tests", () => {
   const testPassword = "StrongP@ssw0rd!";
   const testUsername = "Test User";
 
-  // beforeEach(async () => {
-  //   // create greenmail user
-  //   await createGreenmailUser(testEmail, testLogin, testPassword);
-  //   // Clean up any existing test user
-  //   await cleanupTestUser(testEmail);
-
-  //   // Note: We don't need to create Greenmail users explicitly
-  //   // They will be created automatically when emails are sent
-  // });
-
   afterEach(async () => {
     // Clean up test user after each test
     await cleanupTestUser(testEmail);
@@ -94,7 +84,7 @@ describe("Authentication E2E Tests", () => {
 
       // Step 4: Wait for email to be sent and extract confirmation link
       // await waitForEmail(2000);
-      const confirmationLink = await extractSignupLink();
+      const confirmationLink = await extractSignupLink(testLogin, testPassword);
       expect(confirmationLink).toBeTruthy();
       expect(confirmationLink).toMatch(
         /^https?:\/\/.*\/api\/auth\/confirm\?token=.+$/
