@@ -11,8 +11,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       redirect: false,
     });
 
-    const redirectUrl = process.env.NEXT_PUBLIC_BASE_URL + (redirectTo || "/");
-    return NextResponse.redirect(redirectUrl, 307);
+    const redirectUrl = redirectTo || "/";
+    return NextResponse.json(
+      { success: true, redirect: redirectUrl } as AuthResponse,
+      { status: 200 }
+    );
   } catch (error) {
     console.log(error);
     return NextResponse.json(

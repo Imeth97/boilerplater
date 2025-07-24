@@ -632,6 +632,7 @@ export const ChangePasswordBtn = ({
 
 export const SignOutBtn = () => {
   const logoutMutation = useLogout();
+  const router = useRouter();
 
   async function handleSignOut() {
     console.log("signing out");
@@ -640,8 +641,11 @@ export const SignOutBtn = () => {
         redirectTo: "/",
       },
       {
-        onSuccess: () => {
-          // Logout successful, NextAuth will handle the redirect
+        onSuccess: (data) => {
+          if (data.success && data.redirect) {
+            router.refresh();
+            router.push(data.redirect);
+          }
         },
         onError: (error) => {
           console.error("Logout failed:", error);

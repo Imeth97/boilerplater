@@ -12,7 +12,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 -UI Components
 
 Make sure to confirm nothing has broken by running at least the unit tests.
-If you make a change to anything relating to authentication or database, you MUST also run the e2e tests.
+If you make a change to any sever side logic relating to authentication or database, you MUST also run the e2e tests.
+You do not need to run those e2e tests if your change was only on the client side (or mostly a UI related change).
 
 ## Development Commands
 
