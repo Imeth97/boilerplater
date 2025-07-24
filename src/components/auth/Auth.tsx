@@ -23,6 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useSignup } from "@/hooks/useSignup";
 import { useLogin } from "@/hooks/useLogin";
 import { useLogout } from "@/hooks/useLogout";
+import { useAuth } from "@/hooks/useAuth";
 import { ResetPassword } from "@/lib/auth/ResetPassword";
 import { passwordSchema } from "@/lib/auth/shared.utils";
 import { UpdatePassword } from "@/lib/auth/UpdatePassword";
@@ -47,6 +48,7 @@ function EmailSignInForm() {
   const [error, setError] = useState(false);
   const router = useRouter();
   const loginMutation = useLogin();
+  const { invalidateAuth } = useAuth();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -66,13 +68,13 @@ function EmailSignInForm() {
       },
       {
         onSuccess: (data) => {
-          if (!!data.redirect) {
+          if (data.success && data.redirect) {
+            invalidateAuth(); // Invalidate auth state to update navbar
             router.refresh();
             router.push(data.redirect);
-            return;
-          }
-          if (data.success) {
-            // navigate to dashboard with a refresh
+          } else if (data.success) {
+            // fallback to dashboard if no redirect specified
+            invalidateAuth(); // Invalidate auth state to update navbar
             router.refresh();
             router.push("/dashboard");
           } else {
@@ -343,6 +345,7 @@ function EmailSignUpForm() {
   const [error, setError] = useState(false);
   const router = useRouter();
   const signupMutation = useSignup();
+  const { invalidateAuth } = useAuth();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof signupFormSchema>>({
@@ -365,6 +368,7 @@ function EmailSignUpForm() {
         onSuccess: (data) => {
           if (data.success) {
             // navigate to dashboard with a refresh
+            invalidateAuth(); // Invalidate auth state to update navbar
             router.refresh();
             router.push("/dashboard");
           } else {
@@ -633,6 +637,7 @@ export const ChangePasswordBtn = ({
 export const SignOutBtn = () => {
   const logoutMutation = useLogout();
   const router = useRouter();
+  const { invalidateAuth } = useAuth();
 
   async function handleSignOut() {
     console.log("signing out");
@@ -643,6 +648,7 @@ export const SignOutBtn = () => {
       {
         onSuccess: (data) => {
           if (data.success && data.redirect) {
+            invalidateAuth(); // Invalidate auth state to update navbar
             router.refresh();
             router.push(data.redirect);
           }

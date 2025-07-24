@@ -53,9 +53,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       password: password ?? "",
     });
 
-    return NextResponse.json({ success: true } as AuthResponse, {
-      status: 200,
-    });
+    return NextResponse.json(
+      { success: true, redirect: "/dashboard" } as AuthResponse,
+      { status: 200 }
+    );
   } catch (error) {
     console.log(error);
     return NextResponse.json(
