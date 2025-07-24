@@ -1,8 +1,8 @@
 import db from "@/db/db";
 import { account, user } from "@/db/schema";
-import { eq } from "drizzle-orm";
 import { signIn } from "@/lib/auth";
 import { AuthResponse } from "@/lib/auth/typings/auth";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .from(user)
       .leftJoin(account, eq(account.userId, user.id))
       .where(eq(user.email, email ?? ""))
-      .then((result) => result[0]);
+      .then((result) => result[0] || { provider: null, password: null });
 
     // if there is a provider and no password, user previously signed in with oauth
     if (!!provider && !userPassword) {
@@ -47,24 +47,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const result = await signIn("credentials", {
+    await signIn("credentials", {
       redirect: false,
       email: email ?? "",
       password: password ?? "",
     });
 
-    // Check if authentication was successful
-    if (result?.error) {
-      return NextResponse.json(
-        { success: false, error: "Authentication failed" } as AuthResponse,
-        { status: 401 }
-      );
-    }
-
-    return NextResponse.json(
-      { success: true } as AuthResponse,
-      { status: 200 }
-    );
+    return NextResponse.json({ success: true } as AuthResponse, {
+      status: 200,
+    });
   } catch (error) {
     console.log(error);
     return NextResponse.json(

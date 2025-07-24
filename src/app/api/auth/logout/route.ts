@@ -8,14 +8,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const { redirectTo } = body;
 
     await signOut({
-      redirect: !!redirectTo,
-      redirectTo: redirectTo,
+      redirect: false,
     });
 
-    return NextResponse.json(
-      { success: true } as AuthResponse,
-      { status: 200 }
-    );
+    const redirectUrl = process.env.NEXT_PUBLIC_BASE_URL + (redirectTo || "/");
+    return NextResponse.redirect(redirectUrl, 307);
   } catch (error) {
     console.log(error);
     return NextResponse.json(
