@@ -67,9 +67,9 @@ export async function authenticateUser(
   }
 }
 
-export async function extractSignupLink(): Promise<string | null> {
+export async function extractSignupLink(username: string = "test", password: string = "secret"): Promise<string | null> {
   try {
-    const { stdout } = await execAsync("./scripts/mail/extract-signup-link.sh");
+    const { stdout } = await execAsync(`./scripts/mail/extract-signup-link.sh "${username}" "${password}"`);
     const link = stdout.trim();
 
     if (link === "No link found." || !link) {
