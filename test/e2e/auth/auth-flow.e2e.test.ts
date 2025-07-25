@@ -227,6 +227,7 @@ describe("Authentication E2E Tests", () => {
         expect(signupResult.data.success).toBe(true);
       });
 
+      // todo - fix flakiness of these tests (they only fail on CI)
       it.skip("should fail login with incorrect password", async () => {
         const loginResult = await loginViaAPI(
           loginTestEmail,
