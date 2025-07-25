@@ -26,7 +26,7 @@ jobs:
 
       - name: Start Database and SMTP Server
         run: |
-          yarn run reset-environment
+          echo "Y" | yarn run reset-environment
 
       - name: Build Project
         run: |
