@@ -20,6 +20,7 @@ import {
 
 export function LoginForm() {
   const [error, setError] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const router = useRouter();
   const loginMutation = useLogin();
   const { invalidateAuth } = useAuth();
@@ -30,6 +31,7 @@ export function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     setError(false);
+    setIsLoggingIn(true);
     
     loginMutation.mutate(
       {
@@ -42,16 +44,20 @@ export function LoginForm() {
             invalidateAuth();
             router.refresh();
             router.push(data.redirect);
+            // Keep isLoggingIn true - don't reset it since we're navigating away
           } else if (data.success) {
             invalidateAuth();
             router.refresh();
             router.push("/dashboard");
+            // Keep isLoggingIn true - don't reset it since we're navigating away
           } else {
             setError(true);
+            setIsLoggingIn(false);
           }
         },
         onError: () => {
           setError(true);
+          setIsLoggingIn(false);
         },
       }
     );
@@ -70,7 +76,7 @@ export function LoginForm() {
         
         <div className="flex flex-col mx-12">
           <LoadingButton
-            isLoading={loginMutation.isPending}
+            isLoading={loginMutation.isPending || isLoggingIn}
             type="submit"
           >
             Sign in

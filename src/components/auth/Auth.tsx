@@ -181,12 +181,14 @@ export const ChangePasswordBtn = ({
 };
 
 export const SignOutBtn = () => {
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const logoutMutation = useLogout();
   const router = useRouter();
   const { invalidateAuth } = useAuth();
 
   async function handleSignOut() {
     console.log("signing out");
+    setIsSigningOut(true);
     logoutMutation.mutate(
       {
         redirectTo: "/",
@@ -197,16 +199,18 @@ export const SignOutBtn = () => {
             invalidateAuth(); // Invalidate auth state to update navbar
             router.refresh();
             router.push(data.redirect);
+            // Keep isSigningOut true - don't reset it since we're navigating away
           }
         },
         onError: (error) => {
           console.error("Logout failed:", error);
+          setIsSigningOut(false); // Only reset loading state on error
         },
       }
     );
   }
 
-  if (logoutMutation.isPending) {
+  if (logoutMutation.isPending || isSigningOut) {
     return <Loader2 className="h-8 w-8 animate-spin text-slate-300" />;
   }
 

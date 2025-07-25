@@ -29,6 +29,7 @@ import {
 
 export function SignupForm() {
   const [error, setError] = useState(false);
+  const [isSigningUp, setIsSigningUp] = useState(false);
   const router = useRouter();
   const signupMutation = useSignup();
   const { invalidateAuth } = useAuth();
@@ -39,6 +40,7 @@ export function SignupForm() {
 
   async function onSubmit(values: z.infer<typeof signupFormSchema>) {
     setError(false);
+    setIsSigningUp(true);
     
     signupMutation.mutate(
       {
@@ -52,12 +54,15 @@ export function SignupForm() {
             invalidateAuth();
             router.refresh();
             router.push("/dashboard");
+            // Keep isSigningUp true - don't reset it since we're navigating away
           } else {
             setError(true);
+            setIsSigningUp(false);
           }
         },
         onError: () => {
           setError(true);
+          setIsSigningUp(false);
         },
       }
     );
@@ -95,7 +100,7 @@ export function SignupForm() {
         
         <div className="flex flex-col mx-12">
           <LoadingButton
-            isLoading={signupMutation.isPending}
+            isLoading={signupMutation.isPending || isSigningUp}
             type="submit"
           >
             Sign up
