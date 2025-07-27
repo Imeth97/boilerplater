@@ -1,13 +1,13 @@
 import db from "@/db/db";
-import { user } from "@/db/schema";
-import { sendMail } from "@/lib/email/sendEmail";
-import { eq } from "drizzle-orm";
+import { account, user } from "@/db/schema";
 import { passwordSchema } from "@/lib/auth/shared.utils";
 import {
   constructConfirmationUrl,
   constructHashedPassword,
 } from "@/lib/auth/test-utils";
 import { AuthResponse } from "@/lib/auth/typings/auth";
+import { sendMail } from "@/lib/email/sendEmail";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -30,11 +30,30 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Check if user already exists
-    const existingUser = await db.query.user.findFirst({
-      where: eq(user.email, email),
-    });
-    if (existingUser) {
+    // Check if user already exists and what providers they used
+    const { provider, password: userPassword } = await db
+      .select({
+        provider: account.provider,
+        password: user.password,
+      })
+      .from(user)
+      .leftJoin(account, eq(account.userId, user.id))
+      .where(eq(user.email, email ?? ""))
+      .then((result) => result[0] || { provider: null, password: null });
+
+    if (userPassword || provider) {
+      // User already exists
+      if (provider && !userPassword) {
+        // User exists with OAuth only - redirect to login with provider hint
+        return NextResponse.json(
+          {
+            success: false,
+            redirect: `/login?provider=${provider}&email=${email}`,
+          } as AuthResponse,
+          { status: 409 }
+        );
+      }
+      // User exists with credentials (or both) - regular conflict
       return NextResponse.json(
         { success: false, error: "User already exists" } as AuthResponse,
         { status: 409 }
@@ -78,24 +97,26 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Sign in the user via login API
     try {
-      const loginResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const loginResponse = await fetch(
+        `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       if (loginResponse.ok) {
         const loginResult = await loginResponse.json();
         if (loginResult.success) {
-          return NextResponse.json(
-            { success: true } as AuthResponse,
-            { status: 200 }
-          );
+          return NextResponse.json({ success: true } as AuthResponse, {
+            status: 200,
+          });
         }
       }
-      
+
       return NextResponse.json(
         { success: false, error: "Failed to sign in" } as AuthResponse,
         { status: 500 }

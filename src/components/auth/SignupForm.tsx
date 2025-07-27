@@ -50,12 +50,18 @@ export function SignupForm() {
       },
       {
         onSuccess: (data) => {
-          if (data.success) {
+          if (data.redirect) {
+            // Handle any redirect (OAuth conflicts during signup)
+            router.push(data.redirect);
+            // Keep isSigningUp true - don't reset it since we're navigating away
+          } else if (data.success) {
+            // Successful signup - authenticate and go to dashboard
             invalidateAuth();
             router.refresh();
             router.push("/dashboard");
             // Keep isSigningUp true - don't reset it since we're navigating away
           } else {
+            // Failed signup without redirect
             setError(true);
             setIsSigningUp(false);
           }
