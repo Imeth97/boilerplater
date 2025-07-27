@@ -40,17 +40,22 @@ export function LoginForm() {
       },
       {
         onSuccess: (data) => {
-          if (data.success && data.redirect) {
-            invalidateAuth();
-            router.refresh();
+          if (data.redirect) {
+            // Handle any redirect (both successful logins and OAuth conflicts)
+            if (data.success) {
+              invalidateAuth();
+              router.refresh();
+            }
             router.push(data.redirect);
             // Keep isLoggingIn true - don't reset it since we're navigating away
           } else if (data.success) {
+            // Successful login without redirect - go to dashboard
             invalidateAuth();
             router.refresh();
             router.push("/dashboard");
             // Keep isLoggingIn true - don't reset it since we're navigating away
           } else {
+            // Failed login without redirect
             setError(true);
             setIsLoggingIn(false);
           }

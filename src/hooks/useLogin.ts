@@ -17,6 +17,12 @@ async function loginUser(data: LoginData): Promise<AuthResponse> {
 
   if (!response.ok) {
     const errorData = await response.json();
+    
+    // Handle 409 responses with redirect (OAuth conflict case)
+    if (response.status === 409 && errorData.redirect) {
+      return errorData;
+    }
+    
     throw new Error(errorData.error || "Failed to log in");
   }
 
