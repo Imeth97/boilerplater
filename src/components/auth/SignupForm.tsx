@@ -7,25 +7,17 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useSignup } from "@/hooks/useSignup";
 import { useAuth } from "@/hooks/useAuth";
 import { signupFormSchema } from "./utils/authSchemas";
 import {
   EmailFormField,
   NameFormField,
+  PasswordFormField,
   AuthErrorAlert,
   LoadingButton,
   AuthFormContainer,
 } from "./utils/authUtils";
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 
 export function SignupForm({ onClose }: { onClose?: () => void }) {
   const [error, setError] = useState(false);
@@ -87,24 +79,7 @@ export function SignupForm({ onClose }: { onClose?: () => void }) {
         
         <EmailFormField control={form.control} name="email" />
         
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  autoComplete="current-password"
-                />
-              </FormControl>
-              <FormDescription>A secure password.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <PasswordFormField control={form.control} name="password" />
         
         <div className="flex flex-col mx-12">
           <LoadingButton
