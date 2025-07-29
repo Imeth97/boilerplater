@@ -35,7 +35,7 @@ const DirectionalText = ({
   return <div>Forgotten your password?</div>;
 };
 
-function AuthFormSwitcher() {
+function AuthFormSwitcher({ onClose }: { onClose?: () => void }) {
   const [formType, setFormType] = useState<"signIn" | "signUp" | "reset">(
     "signIn"
   );
@@ -43,7 +43,7 @@ function AuthFormSwitcher() {
   let form: JSX.Element | null = null;
 
   if (formType === "signIn") {
-    form = <LoginForm />;
+    form = <LoginForm onClose={onClose} />;
   }
 
   if (formType === "reset") {
@@ -51,7 +51,7 @@ function AuthFormSwitcher() {
   }
 
   if (formType === "signUp") {
-    form = <SignupForm />;
+    form = <SignupForm onClose={onClose} />;
   }
 
   return (
@@ -94,12 +94,12 @@ function AuthFormSwitcher() {
   );
 }
 
-export function AuthForm() {
+export function AuthForm({ onClose }: { onClose?: () => void }) {
   return (
     <div className="flex flex-col justify-center w-full max-w-md mx-auto">
       <div className="px-4">
         <div className="my-6">
-          <AuthFormSwitcher />
+          <AuthFormSwitcher onClose={onClose} />
         </div>
       </div>
     </div>
@@ -136,7 +136,7 @@ export const LoginBtn = ({
       </DialogTrigger>
 
       <DialogContent className="text-center">
-        <AuthForm />
+        <AuthForm onClose={() => setIsOpen(false)} />
       </DialogContent>
     </Dialog>
   );
