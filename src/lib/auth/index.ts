@@ -13,6 +13,9 @@ const authOptions: NextAuthConfig = {
   basePath: BASE_PATH,
   jwt,
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    error: "/auth/error",
+  },
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authOptions);
