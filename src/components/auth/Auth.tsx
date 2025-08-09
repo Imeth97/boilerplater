@@ -3,475 +3,21 @@
 import { Button, ButtonVariants } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeftIcon, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useRouter } from "next/navigation";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { useSignup } from "@/hooks/useSignup";
-import { useLogin } from "@/hooks/useLogin";
 import { useLogout } from "@/hooks/useLogout";
 import { useAuth } from "@/hooks/useAuth";
 import { ResetPassword } from "@/lib/auth/ResetPassword";
-import { passwordSchema } from "@/lib/auth/shared.utils";
-import { UpdatePassword } from "@/lib/auth/UpdatePassword";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Spacer from "../common/Spacer";
-import { Input } from "../ui/input";
-import PasswordInputField from "../ui/passwordInput";
 import Providers from "./oauth/Provider";
+import { LoginForm } from "./LoginForm";
+import { SignupForm } from "./SignupForm";
+import { ResetPasswordForm } from "./ResetPasswordForm";
 
-const loginFormSchema = z.object({
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
-});
-
-function EmailSignInForm() {
-  const [error, setError] = useState(false);
-  const router = useRouter();
-  const loginMutation = useLogin();
-  const { invalidateAuth } = useAuth();
-
-  // 1. Define your form.
-  const form = useForm<z.infer<typeof loginFormSchema>>({
-    resolver: zodResolver(loginFormSchema),
-  });
-
-  // 2. Define a submit handler.
-  async function onSubmitSignIn(values: z.infer<typeof loginFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    setError(false);
-    
-    loginMutation.mutate(
-      {
-        email: values.email,
-        password: values.password,
-      },
-      {
-        onSuccess: (data) => {
-          if (data.success && data.redirect) {
-            invalidateAuth(); // Invalidate auth state to update navbar
-            router.refresh();
-            router.push(data.redirect);
-          } else if (data.success) {
-            // fallback to dashboard if no redirect specified
-            invalidateAuth(); // Invalidate auth state to update navbar
-            router.refresh();
-            router.push("/dashboard");
-          } else {
-            setError(true);
-          }
-        },
-        onError: () => {
-          setError(true);
-        },
-      }
-    );
-  }
-
-  return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmitSignIn)}
-        method="post"
-        className="space-y-8"
-      >
-        {error && (
-          <Alert variant="destructive" className="max-w-full">
-            <ExclamationTriangleIcon className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              There was an issue authenticating you. Please double check your
-              email and password and try again later or{" "}
-              <Link
-                href={"/contact-us"}
-                className="underline hover:text-stone-600"
-              >
-                contact us
-              </Link>{" "}
-              for support.
-            </AlertDescription>
-          </Alert>
-        )}
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} autoComplete="email" />
-              </FormControl>
-              <FormDescription>
-                Your personal valid email address.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <PasswordInputField {...field} />
-              </FormControl>
-              <FormDescription>A secure password.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex flex-col mx-12">
-          <Button className="my-3" type="submit">
-            {loginMutation.isPending ? (
-              <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
-            ) : (
-              "Sign in"
-            )}
-          </Button>
-
-          {/* <Button className='my-3' variant='outline'>
-              Don&apos;t have an account? Sign up instead
-            </Button> */}
-        </div>
-      </form>
-    </Form>
-  );
-}
-
-const resetFormSchema = z.object({
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-});
-
-function EmailResetForm() {
-  const form = useForm<z.infer<typeof resetFormSchema>>({
-    resolver: zodResolver(resetFormSchema),
-  });
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  async function onSubmit(values: z.infer<typeof resetFormSchema>) {
-    // Send a password reset email
-    const { email } = values;
-    setIsLoading(true);
-    const res = await ResetPassword(email);
-    if (!res.success) {
-      setIsLoading(false);
-      setError(true);
-      return;
-    }
-    setIsLoading(false);
-    setSuccess(true);
-  }
-
-  if (success) {
-    return (
-      <div className="flex flex-col justify-center text-center">
-        <p>Password reset email sent</p>
-        <p>Please check your email for a link to reset your password.</p>
-      </div>
-    );
-  }
-
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {error && (
-          <Alert variant="destructive">
-            <ExclamationTriangleIcon className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              There was an issue sending the password reset email. Please ensure
-              the email is valid and an account exists under that email.
-            </AlertDescription>
-          </Alert>
-        )}
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription>
-                Enter a valid email we can send a reset link to
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex flex-col mx-12">
-          <Button type="submit">
-            {isLoading ? (
-              <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
-            ) : (
-              "Send me a link"
-            )}
-          </Button>
-        </div>
-      </form>
-    </Form>
-  );
-}
-
-interface NewPasswordFormProps {
-  token: string;
-}
-
-const newPasswordFormSchema = z.object({
-  password: passwordSchema,
-});
-
-export function NewPasswordForm({ token }: NewPasswordFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const router = useRouter();
-
-  const form = useForm<z.infer<typeof newPasswordFormSchema>>({
-    resolver: zodResolver(newPasswordFormSchema),
-  });
-
-  async function onSubmit(values: z.infer<typeof newPasswordFormSchema>) {
-    setIsLoading(true);
-    // TODO: Implement password reset API call here
-    const res = await UpdatePassword(values.password, token);
-    if (!res.success) {
-      setIsLoading(false);
-      setError(true);
-      return;
-    }
-    setIsLoading(false);
-    setSuccess(true);
-  }
-
-  if (success) {
-    return (
-      <div className="flex flex-col justify-center text-center">
-        <p>Password successfully reset</p>
-        <p>You can now use your new password to sign in.</p>
-        <Spacer verticalPx={24} />
-        <Button onClick={() => router.push("/login")} className="mx-12">
-          Sign in
-        </Button>
-      </div>
-    );
-  }
-
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {error && (
-          <Alert variant="destructive">
-            <ExclamationTriangleIcon className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              There was an issue resetting your password. Please try again later
-              or{" "}
-              <Link
-                href={"/contact-us"}
-                className="underline hover:text-stone-600"
-              >
-                contact us
-              </Link>{" "}
-              for support.
-            </AlertDescription>
-          </Alert>
-        )}
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>New Password</FormLabel>
-              <FormControl>
-                <PasswordInputField {...field} />
-              </FormControl>
-              <FormDescription>Enter your new password</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex flex-col mx-12">
-          <Button type="submit">
-            {isLoading ? (
-              <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
-            ) : (
-              "Reset Password"
-            )}
-          </Button>
-        </div>
-      </form>
-    </Form>
-  );
-}
-
-const signupFormSchema = z.object({
-  name: z.string().optional(),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  password: passwordSchema,
-});
-
-function EmailSignUpForm() {
-  const [error, setError] = useState(false);
-  const router = useRouter();
-  const signupMutation = useSignup();
-  const { invalidateAuth } = useAuth();
-
-  // 1. Define your form.
-  const form = useForm<z.infer<typeof signupFormSchema>>({
-    resolver: zodResolver(signupFormSchema),
-  });
-
-  // 2. Define a submit handler.
-  async function onSubmitSignIn(values: z.infer<typeof signupFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    setError(false);
-    
-    signupMutation.mutate(
-      {
-        email: values.email,
-        password: values.password,
-        username: values.name,
-      },
-      {
-        onSuccess: (data) => {
-          if (data.success) {
-            // navigate to dashboard with a refresh
-            invalidateAuth(); // Invalidate auth state to update navbar
-            router.refresh();
-            router.push("/dashboard");
-          } else {
-            setError(true);
-          }
-        },
-        onError: () => {
-          setError(true);
-        },
-      }
-    );
-  }
-
-  return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmitSignIn)}
-        method="post"
-        className="space-y-8"
-      >
-        {error && (
-          <Alert variant="destructive">
-            <ExclamationTriangleIcon className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              There was an issue with your sign up. Please try again later or{" "}
-              <Link
-                href={"/contact-us"}
-                className="underline hover:text-stone-600"
-              >
-                contact us
-              </Link>{" "}
-              for support.
-            </AlertDescription>
-          </Alert>
-        )}
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input {...field} autoComplete="name" />
-              </FormControl>
-              <FormDescription>
-                A display name for your account.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} autoComplete="email" />
-              </FormControl>
-              <FormDescription>
-                Your personal valid email address.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  autoComplete="current-password"
-                />
-              </FormControl>
-              <FormDescription>A secure password.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex flex-col mx-12">
-          <Button className="my-3" type="submit">
-            {signupMutation.isPending ? (
-              <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
-            ) : (
-              "Sign up"
-            )}
-          </Button>
-
-          {/* <Button className='my-3' variant='outline'>
-              Don&apos;t have an account? Sign up instead
-            </Button> */}
-        </div>
-      </form>
-    </Form>
-  );
-}
+// Re-export NewPasswordForm for backward compatibility
+export { NewPasswordForm } from "./NewPasswordForm";
 
 const DirectionalText = ({
   formType,
@@ -489,7 +35,7 @@ const DirectionalText = ({
   return <div>Forgotten your password?</div>;
 };
 
-function LoginForm() {
+function AuthFormSwitcher({ onClose }: { onClose?: () => void }) {
   const [formType, setFormType] = useState<"signIn" | "signUp" | "reset">(
     "signIn"
   );
@@ -497,15 +43,15 @@ function LoginForm() {
   let form: JSX.Element | null = null;
 
   if (formType === "signIn") {
-    form = <EmailSignInForm />;
+    form = <LoginForm onClose={onClose} />;
   }
 
   if (formType === "reset") {
-    form = <EmailResetForm />;
+    form = <ResetPasswordForm />;
   }
 
   if (formType === "signUp") {
-    form = <EmailSignUpForm />;
+    form = <SignupForm onClose={onClose} />;
   }
 
   return (
@@ -548,12 +94,12 @@ function LoginForm() {
   );
 }
 
-export function AuthForm() {
+export function AuthForm({ onClose }: { onClose?: () => void }) {
   return (
     <div className="flex flex-col justify-center w-full max-w-md mx-auto">
       <div className="px-4">
         <div className="my-6">
-          <LoginForm />
+          <AuthFormSwitcher onClose={onClose} />
         </div>
       </div>
     </div>
@@ -590,7 +136,7 @@ export const LoginBtn = ({
       </DialogTrigger>
 
       <DialogContent className="text-center">
-        <AuthForm />
+        <AuthForm onClose={() => setIsOpen(false)} />
       </DialogContent>
     </Dialog>
   );
@@ -635,12 +181,14 @@ export const ChangePasswordBtn = ({
 };
 
 export const SignOutBtn = () => {
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const logoutMutation = useLogout();
   const router = useRouter();
   const { invalidateAuth } = useAuth();
 
   async function handleSignOut() {
     console.log("signing out");
+    setIsSigningOut(true);
     logoutMutation.mutate(
       {
         redirectTo: "/",
@@ -651,16 +199,18 @@ export const SignOutBtn = () => {
             invalidateAuth(); // Invalidate auth state to update navbar
             router.refresh();
             router.push(data.redirect);
+            // Keep isSigningOut true - don't reset it since we're navigating away
           }
         },
         onError: (error) => {
           console.error("Logout failed:", error);
+          setIsSigningOut(false); // Only reset loading state on error
         },
       }
     );
   }
 
-  if (logoutMutation.isPending) {
+  if (logoutMutation.isPending || isSigningOut) {
     return <Loader2 className="h-8 w-8 animate-spin text-slate-300" />;
   }
 

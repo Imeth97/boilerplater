@@ -1,5 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
 import { AuthResponse } from "@/lib/auth/typings/auth";
+import { useMutation } from "@tanstack/react-query";
 
 interface SignupData {
   email: string;
@@ -18,6 +18,12 @@ async function signupUser(data: SignupData): Promise<AuthResponse> {
 
   if (!response.ok) {
     const errorData = await response.json();
+    console.log(errorData);
+    // Handle 409 responses with redirect (OAuth conflict case)
+    if (response.status === 409 && errorData.redirect) {
+      return errorData;
+    }
+
     throw new Error(errorData.error || "Failed to sign up");
   }
 
