@@ -1,12 +1,12 @@
 import db from "@/db/db";
 import { user, passwordResetToken } from "@/db/schema";
-import { eq, and, isNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import { passwordSchema } from "@/lib/auth/shared.utils";
 import { constructHashedPassword } from "@/lib/auth/server.utils";
 import { auth } from "@/lib/auth";
 import { Logout } from "@/lib/auth/Logout";
+import { validatePasswordResetToken } from "@/lib/auth/token-validation";
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,49 +26,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate the token first
+    const validation = await validatePasswordResetToken(tokenId, token);
+    if (!validation.isValid) {
+      return NextResponse.json(
+        { success: false, error: validation.error },
+        { status: 400 }
+      );
+    }
+
     const result = await db.transaction(async (tx) => {
-      // Get the token record with user info
-      const tokenRecord = await tx
-        .select({
-          token: passwordResetToken,
-          user: user,
-        })
-        .from(passwordResetToken)
-        .innerJoin(user, eq(passwordResetToken.userId, user.id))
-        .where(
-          and(
-            eq(passwordResetToken.id, tokenId),
-            isNull(passwordResetToken.usedAt)
-          )
-        )
-        .then(([record]) => record);
-
-      if (!tokenRecord) {
-        throw new Error("Invalid or already used token");
-      }
-
-      // Check if token has expired
-      if (tokenRecord.token.expiresAt < new Date()) {
-        throw new Error("Token has expired");
-      }
-
-      // Verify token hash
-      const isValidToken = await bcrypt.compare(token, tokenRecord.token.tokenHash);
-      if (!isValidToken) {
-        throw new Error("Invalid token");
-      }
-
       // Hash the new password
       const hashedPassword = await constructHashedPassword(password);
+
+      // Get user's current reset nonce for increment
+      const userData = await tx
+        .select({ resetNonce: user.resetNonce })
+        .from(user)
+        .where(eq(user.id, validation.userId!))
+        .then(([record]) => record);
 
       // Update password, increment reset nonce, and mark token as used
       await tx
         .update(user)
         .set({ 
           password: hashedPassword,
-          resetNonce: (tokenRecord.user.resetNonce || 0) + 1
+          resetNonce: (userData?.resetNonce || 0) + 1
         })
-        .where(eq(user.id, tokenRecord.user.id));
+        .where(eq(user.id, validation.userId!));
 
       // Mark token as used
       await tx
