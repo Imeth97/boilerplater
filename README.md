@@ -1,5 +1,7 @@
 [![Build/CI](https://github.com/Imeth97/boilerplater/actions/workflows/build-ci.yml/badge.svg)](https://github.com/Imeth97/boilerplater/actions/workflows/build-ci.yml)
+
 # Boilerplater
+
 Next.js boilerplate that comes set up with a full postgres database integration (using drizzle) and a full NextAuth credentials implementation (the entire flow, with email confirmation etc.).
 See below for more details + how to clone and run the boilerplate.
 
@@ -87,15 +89,41 @@ Also make sure to update the .env file with the correct values and ensure securi
 passwords when deploying to production or uploading your code to a public repo.
 Remember that regenerating secrets will invalidate all existing tokens.
 
-**Todos:**
+## DOCS
 
-High Priority:
+Authentication Flows (Credentials):
 
-- email spam - need to implement a way to prevent email spamming
-- checkAuth function - need to find a better way to check if the user is authenticated at the middleware level as drizzle queries do not work on the edge runtime
-- reset password tokens - need to find a way to handle token revocation to avoid replay attacks (redis/dynamodb?)
+User signs up with email and password
 
-Low Priority:
+1. Validation - user cannot already exist, email & password must be valid etc.
+2. User is created in DB by email
+3. Confirmation email is sent with signed token
+4. User is signed in (as an unverified account)
 
-- rabbitmq - need to implement a message queue for email sending
-- Deployment to AWS: main.tf file exists but may require updating.
+Email confirmation flow
+
+1. User opens email with confirmation link
+2. Link is opened and token verified
+
+Set/Forgot password flow
+
+1. User opts to reset password via button (or enters email as forgot password flow)
+2. Email is sent with signed token in link to reset password
+3. User opens email & clicks link
+4. Link opens & token is verified
+5. User resets password - db update
+6. User is signed out
+7. User can sign in again with new password
+
+Clash scenarios:
+User signed in previously via email & now uses OAuth (e.g. github)
+
+1. account-linking.ts - check if user already exists under a seperate provider
+2. If so - link the account and continue with oauth sign in
+3. User can now continue to use this oauth + their email/password if they please
+
+User signed in previously via Oauth & now uses Email/Password:
+
+1. Check if the user's email exists in DB with a different provider
+2. If so, route them to page showing AccountResolution.tsx - notify them they previously used X provider but can set a password
+   via the Set password flow
