@@ -127,3 +127,24 @@ User signed in previously via Oauth & now uses Email/Password:
 1. Check if the user's email exists in DB with a different provider
 2. If so, route them to page showing AccountResolution.tsx - notify them they previously used X provider but can set a password
    via the Set password flow
+
+### Password Reset Token Revocation
+
+Our password reset flow uses **opaque, single-use tokens** stored in the database.
+
+When a user requests a reset link:
+
+- Any existing unused reset tokens for that user are immediately invalidated.
+- A new random token is generated, hashed, stored with an expiry time, and sent to the user with its token ID.
+
+When the link is used:
+
+- The system verifies the token against the database in a single transaction.
+- If valid, the password is updated, the token is marked as used, and the user’s `reset_nonce` is incremented.
+- Incrementing `reset_nonce` ensures all other outstanding tokens for that user are invalidated.
+
+This guarantees:
+
+- **One-time use** — links cannot be reused.
+- **Instant invalidation** — all tokens for a user can be killed at once.
+- **No reliance on JWT expiry alone** — the database is the single source of truth.
