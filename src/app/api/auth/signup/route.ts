@@ -1,5 +1,6 @@
 import db from "@/db/db";
 import { account, user } from "@/db/schema";
+import { signIn } from "@/lib/auth";
 import { passwordSchema } from "@/lib/auth/shared.utils";
 import {
   constructConfirmationUrl,
@@ -97,35 +98,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Sign in the user via login API
     try {
-      const loginResponse = await fetch(
-        `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
-
-      if (loginResponse.ok) {
-        const loginResult = await loginResponse.json();
-        if (loginResult.success) {
-          return NextResponse.json({ success: true } as AuthResponse, {
-            status: 200,
-          });
-        }
-      }
+      await signIn("credentials", {
+        redirect: false,
+        email: email ?? "",
+        password: password ?? "",
+      });
 
       return NextResponse.json(
-        { success: false, error: "Failed to sign in" } as AuthResponse,
-        { status: 500 }
+        { success: true, redirect: "/dashboard" } as AuthResponse,
+        { status: 200 }
       );
-    } catch (loginError) {
-      console.error("Login error during signup:", loginError);
+    } catch (authError) {
+      console.error("Auth error during signup:", authError);
       return NextResponse.json(
         { success: false, error: "Failed to sign in" } as AuthResponse,
-        { status: 500 }
+        { status: 401 }
       );
     }
   } catch (error) {
