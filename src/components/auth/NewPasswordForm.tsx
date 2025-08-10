@@ -8,7 +8,7 @@ import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { UpdatePassword } from "@/lib/auth/UpdatePassword";
+import { useResetPassword } from "@/hooks/usePasswordReset";
 import Spacer from "@/components/common/Spacer";
 import { newPasswordFormSchema } from "./utils/authSchemas";
 import {
@@ -20,29 +20,33 @@ import {
 } from "./utils/authUtils";
 
 interface NewPasswordFormProps {
+  tokenId: string;
   token: string;
 }
 
-export function NewPasswordForm({ token }: NewPasswordFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
+export function NewPasswordForm({ tokenId, token }: NewPasswordFormProps) {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
+  const resetPassword = useResetPassword();
 
   const form = useForm<z.infer<typeof newPasswordFormSchema>>({
     resolver: zodResolver(newPasswordFormSchema),
   });
 
   async function onSubmit(values: z.infer<typeof newPasswordFormSchema>) {
-    setIsLoading(true);
-    const res = await UpdatePassword(values.password, token);
-    if (!res.success) {
-      setIsLoading(false);
+    setError(false);
+    
+    try {
+      await resetPassword.mutateAsync({
+        password: values.password,
+        tokenId,
+        token,
+      });
+      setSuccess(true);
+    } catch (err) {
       setError(true);
-      return;
     }
-    setIsLoading(false);
-    setSuccess(true);
   }
 
   if (success) {
@@ -78,7 +82,7 @@ export function NewPasswordForm({ token }: NewPasswordFormProps) {
         
         <div className="flex flex-col mx-12">
           <LoadingButton
-            isLoading={isLoading}
+            isLoading={resetPassword.isPending}
             type="submit"
           >
             Reset Password

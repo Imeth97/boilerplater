@@ -1,5 +1,4 @@
 import { NewPasswordForm } from "@/components/auth/Auth";
-import { verifyToken } from "@/lib/utils";
 import Link from "next/link";
 
 const ResetPassword = ({
@@ -7,13 +6,10 @@ const ResetPassword = ({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
+  const tokenId = searchParams.tokenId as string;
   const token = searchParams.token as string;
-  const isTokenValid = verifyToken(
-    token,
-    process.env.EMAIL_PASSWORD_RESET_SECRET!
-  );
 
-  if (!token || !isTokenValid) {
+  if (!tokenId || !token) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md text-center">
@@ -34,7 +30,7 @@ const ResetPassword = ({
         <h1 className="text-2xl font-bold text-gray-800 mb-6">
           Reset Password
         </h1>
-        <NewPasswordForm token={token} />
+        <NewPasswordForm tokenId={tokenId} token={token} />
       </div>
     </div>
   );
