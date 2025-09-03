@@ -23,6 +23,7 @@ export const user = pgTable("user", {
   name: text("name"),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
+  resetNonce: integer("reset_nonce").default(0).notNull(),
 });
 
 export const account = pgTable(
@@ -55,4 +56,17 @@ export const session = pgTable("session", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
+});
+
+export const passwordResetToken = pgTable("password_reset_tokens", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => randomUUID()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  tokenHash: text("token_hash").notNull(),
+  expiresAt: timestamp("expires_at", { mode: "date" }).notNull(),
+  usedAt: timestamp("used_at", { mode: "date" }),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
 });

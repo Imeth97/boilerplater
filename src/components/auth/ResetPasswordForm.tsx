@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
-import { ResetPassword } from "@/lib/auth/ResetPassword";
+import { useRequestPasswordReset } from "@/hooks/usePasswordReset";
 import { resetFormSchema } from "./utils/authSchemas";
 import {
   EmailFormField,
@@ -17,9 +17,9 @@ import {
 } from "./utils/authUtils";
 
 export function ResetPasswordForm() {
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
+  const requestPasswordReset = useRequestPasswordReset();
 
   const form = useForm<z.infer<typeof resetFormSchema>>({
     resolver: zodResolver(resetFormSchema),
@@ -27,15 +27,14 @@ export function ResetPasswordForm() {
 
   async function onSubmit(values: z.infer<typeof resetFormSchema>) {
     const { email } = values;
-    setIsLoading(true);
-    const res = await ResetPassword(email);
-    if (!res.success) {
-      setIsLoading(false);
+    setError(false);
+    
+    try {
+      await requestPasswordReset.mutateAsync({ email });
+      setSuccess(true);
+    } catch (err) {
       setError(true);
-      return;
     }
-    setIsLoading(false);
-    setSuccess(true);
   }
 
   if (success) {
@@ -65,7 +64,7 @@ export function ResetPasswordForm() {
         
         <div className="flex flex-col mx-12">
           <LoadingButton
-            isLoading={isLoading}
+            isLoading={requestPasswordReset.isPending}
             type="submit"
           >
             Send me a link

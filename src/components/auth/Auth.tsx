@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useLogout } from "@/hooks/useLogout";
 import { useAuth } from "@/hooks/useAuth";
-import { ResetPassword } from "@/lib/auth/ResetPassword";
+import { useRequestPasswordReset } from "@/hooks/usePasswordReset";
 import Providers from "./oauth/Provider";
 import { LoginForm } from "./LoginForm";
 import { SignupForm } from "./SignupForm";
@@ -150,28 +150,32 @@ export const ChangePasswordBtn = ({
   label: string;
 }) => {
   const { toast } = useToast();
-  const [isPending, setIsPending] = useState<boolean>(false);
+  const requestPasswordReset = useRequestPasswordReset();
 
-  const onClick = async () => {
-    setIsPending(true);
-    const res = await ResetPassword(email);
-    setIsPending(false);
-    if (!res.success) {
-      toast({
-        title: "Error",
-        description: "Error resetting password",
-        variant: "destructive",
-      });
-    }
-    toast({
-      title: "Password reset email sent",
-      description: "Please check your email for a link to reset your password.",
-    });
+  const onClick = () => {
+    requestPasswordReset.mutate(
+      { email },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Password reset email sent",
+            description: "Please check your email for a link to reset your password.",
+          });
+        },
+        onError: () => {
+          toast({
+            title: "Error",
+            description: "Error resetting password",
+            variant: "destructive",
+          });
+        },
+      }
+    );
   };
 
   return (
-    <Button className="mt-3" onClick={onClick} disabled={isPending}>
-      {isPending ? (
+    <Button className="mt-3" onClick={onClick} disabled={requestPasswordReset.isPending}>
+      {requestPasswordReset.isPending ? (
         <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
       ) : (
         label
