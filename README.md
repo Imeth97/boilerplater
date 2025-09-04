@@ -9,6 +9,8 @@ The only changes needed are:
 3. Add the correct db URLs to your .env file in your production environment (+ locally if you want to connect to the db from your local env).
    See more information here: [Drizzle-Neon integration](https://orm.drizzle.team/docs/tutorials/drizzle-with-neon)
 
+Note: e2e tests are disabled in CI for this branch due to the setup needing the neon client
+
 # Boilerplater
 
 Next.js boilerplate that comes set up with a full postgres database integration (using drizzle) and a full NextAuth credentials implementation (the entire flow, with email confirmation etc.).

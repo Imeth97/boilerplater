@@ -48,12 +48,13 @@ jobs:
           timeout 60 bash -c 'until curl -f http://localhost:3000/api/health 2>/dev/null || curl -f http://localhost:3000 2>/dev/null; do sleep 2; done'
           echo "Server is ready!"
 
-      - name: Run E2E Tests
-        run: |
-          yarn test:e2e
-        env:
-          DATABASE_URL: postgresql://myuser:mypassword@localhost:5432/mydb
-          NEXT_DATABASE_URL: postgresql://myuser:mypassword@localhost:5432/mydb
+      # Uncomment this to run E2E tests
+      # - name: Run E2E Tests
+      #   run: |
+      #     yarn test:e2e
+      #   env:
+      #     DATABASE_URL: postgresql://myuser:mypassword@localhost:5432/mydb
+      #     NEXT_DATABASE_URL: postgresql://myuser:mypassword@localhost:5432/mydb
 
       - name: Cleanup
         if: always()
