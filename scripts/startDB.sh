@@ -33,12 +33,19 @@ fi
 
 # Create and start new PostgreSQL container
 echo "Creating and starting new PostgreSQL container..."
-docker run --name $CONTAINER_NAME \
+if ! docker run --name $CONTAINER_NAME \
     -e POSTGRES_DB=$DB_NAME \
     -e POSTGRES_USER=$DB_USER \
     -e POSTGRES_PASSWORD=$DB_PASSWORD \
     -p 5432:5432 \
-    -d $POSTGRES_IMAGE
+    -d $POSTGRES_IMAGE; then
+    echo -e "\n❌❌❌ ERROR ❌❌❌"
+    echo -e "===================================="
+    echo -e "🐳 Failed to create PostgreSQL container!"
+    echo -e "   Please check Docker logs and try again."
+    echo -e "====================================\n"
+    exit 1
+fi
 
 # Wait for PostgreSQL to be ready
 echo "Waiting for PostgreSQL to start..."

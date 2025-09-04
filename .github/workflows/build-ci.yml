@@ -22,15 +22,45 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          yarn run test --run --silent
+          yarn run test:unit
 
-      - name: Start Database
+      - name: Start Database and SMTP Server
         run: |
-          scripts/startDB.sh
+          echo "Y" | yarn run reset-environment
 
       - name: Build Project
         run: |
           NEXT_DATABASE_URL=postgresql://myuser:mypassword@localhost:5432/mydb yarn run build
+
+      - name: Generate Environment Variables for CI
+        run: |
+          ./scripts/generate-envs-ci.sh
+
+      - name: Start Production Server
+        run: |
+          NEXT_DATABASE_URL=postgresql://myuser:mypassword@localhost:5432/mydb yarn start &
+        env:
+          PORT: 3000
+
+      - name: Wait for Server to be Ready
+        run: |
+          echo "Waiting for server to start on port 3000..."
+          timeout 60 bash -c 'until curl -f http://localhost:3000/api/health 2>/dev/null || curl -f http://localhost:3000 2>/dev/null; do sleep 2; done'
+          echo "Server is ready!"
+
+      # Uncomment this to run E2E tests
+      # - name: Run E2E Tests
+      #   run: |
+      #     yarn test:e2e
+      #   env:
+      #     DATABASE_URL: postgresql://myuser:mypassword@localhost:5432/mydb
+      #     NEXT_DATABASE_URL: postgresql://myuser:mypassword@localhost:5432/mydb
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker compose down
+          docker compose rm -f
 
       # Uncomment this to run the docker build
 

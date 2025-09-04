@@ -1,0 +1,40 @@
+import { AuthResponse } from "@/lib/auth/typings/auth";
+import { useMutation } from "@tanstack/react-query";
+
+interface SignupData {
+  email: string;
+  password: string;
+  username?: string;
+}
+
+async function signupUser(data: SignupData): Promise<AuthResponse> {
+  const response = await fetch("/api/auth/signup", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.log(errorData);
+    // Handle 409 responses with redirect (OAuth conflict case)
+    if (response.status === 409 && errorData.redirect) {
+      return errorData;
+    }
+
+    throw new Error(errorData.error || "Failed to sign up");
+  }
+
+  return response.json();
+}
+
+export function useSignup() {
+  return useMutation<AuthResponse, Error, SignupData>({
+    mutationFn: signupUser,
+    onError: (error) => {
+      console.error("Signup error:", error);
+    },
+  });
+}
