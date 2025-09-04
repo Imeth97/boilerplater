@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,12 +10,11 @@ import {
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { auth } from "../../lib/auth";
+import { useAuth } from "@/hooks/useAuth";
 import { LoginBtn, SignOutBtn } from "../auth/Auth";
 
-const Navbar: React.FC = async () => {
-  const session = await auth();
-  const isAuthenticated = !!session?.user;
+const Navbar: React.FC = () => {
+  const { isAuthenticated } = useAuth();
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-white">
