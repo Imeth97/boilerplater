@@ -1,6 +1,7 @@
 import db from "@/db/db";
 import { user, passwordResetToken } from "@/db/schema";
 import { sendMail } from "@/lib/email/sendEmail";
+import { AuthLogger } from "@/lib/auth/logger";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
@@ -10,7 +11,10 @@ export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json();
 
+    AuthLogger.logAttempt("password_reset_request", "Password reset request", email, undefined, request);
+
     if (!email) {
+      AuthLogger.logFailure("password_reset_validation", "Email is required", email, undefined, request);
       return NextResponse.json(
         { success: false, error: "Email is required" },
         { status: 400 }
@@ -24,6 +28,7 @@ export async function POST(request: NextRequest) {
       .then(([user]) => user);
 
     if (!userToReset) {
+      AuthLogger.logFailure("password_reset_user_not_found", "User not found for password reset", email, undefined, request);
       console.error(`[Request Reset] User not found for email: ${email}`);
       return NextResponse.json(
         { success: false, error: "User not found" },
@@ -67,10 +72,14 @@ export async function POST(request: NextRequest) {
       if (!mailSent) {
         throw new Error("Failed to send email");
       }
+
+      AuthLogger.logSuccess("password_reset_token_generated", "Password reset token generated and email sent", email, userToReset.id, request, { tokenId: newToken.id });
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    AuthLogger.logFailure("password_reset_error", `Password reset request failed: ${errorMessage}`, undefined, undefined, request);
     console.error("[Request Reset] Error:", error);
     return NextResponse.json(
       { success: false, error: "Failed to process reset request" },
