@@ -36,7 +36,7 @@ export function NewPasswordForm({ tokenId, token }: NewPasswordFormProps) {
 
   async function onSubmit(values: z.infer<typeof newPasswordFormSchema>) {
     setError(false);
-    
+
     try {
       await resetPassword.mutateAsync({
         password: values.password,
@@ -72,19 +72,16 @@ export function NewPasswordForm({ tokenId, token }: NewPasswordFormProps) {
         {error && (
           <AuthErrorAlert message="There was an issue resetting your password. Please try again later" />
         )}
-        
+
         <PasswordFormField
           control={form.control}
           name="password"
           label="New Password"
           description="Enter your new password"
         />
-        
+
         <div className="flex flex-col mx-12">
-          <LoadingButton
-            isLoading={resetPassword.isPending}
-            type="submit"
-          >
+          <LoadingButton isLoading={resetPassword.isPending} type="submit">
             Reset Password
           </LoadingButton>
         </div>

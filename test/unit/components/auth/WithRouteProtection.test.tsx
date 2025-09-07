@@ -29,7 +29,7 @@ describe("WithRouteProtection", () => {
     vi.mocked(getUserDetails).mockResolvedValue(mockUser);
 
     const TestContent = () => <div>Protected Content</div>;
-    
+
     const component = await WithRouteProtection({
       children: <TestContent />,
     });

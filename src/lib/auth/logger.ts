@@ -50,8 +50,8 @@ function formatLogMessage(context: LogContext): string {
       context.status === "failure"
         ? "error"
         : context.status === "warning"
-        ? "warn"
-        : "info",
+          ? "warn"
+          : "info",
     action: context.action,
     status: context.status,
     requestId: context.requestId,
