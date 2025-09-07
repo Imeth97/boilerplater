@@ -4,6 +4,8 @@ import db from "@/db/db";
 import { passwordResetToken, user } from "@/db/schema";
 import bcrypt from "bcryptjs";
 import { and, eq, isNull } from "drizzle-orm";
+import { nullToUndefined } from "../type-utils";
+import { AuthLogger } from "./logger";
 
 export interface TokenValidationResult {
   isValid: boolean;
@@ -16,7 +18,24 @@ export async function validatePasswordResetToken(
   token: string
 ): Promise<TokenValidationResult> {
   try {
+    AuthLogger.logAttempt(
+      "token_validation",
+      "Validating password reset token",
+      undefined,
+      undefined,
+      undefined,
+      { tokenId }
+    );
+
     if (!tokenId || !token) {
+      AuthLogger.logFailure(
+        "token_validation",
+        "Missing token ID or token",
+        undefined,
+        undefined,
+        undefined,
+        { tokenId }
+      );
       return {
         isValid: false,
         error: "Token ID and token are required",
@@ -40,6 +59,14 @@ export async function validatePasswordResetToken(
       .then(([record]) => record);
 
     if (!tokenRecord) {
+      AuthLogger.logFailure(
+        "token_validation",
+        "Token not found or already used",
+        undefined,
+        undefined,
+        undefined,
+        { tokenId }
+      );
       return {
         isValid: false,
         error: "Invalid or already used token",
@@ -48,6 +75,14 @@ export async function validatePasswordResetToken(
 
     // Check if token has expired
     if (tokenRecord.token.expiresAt < new Date()) {
+      AuthLogger.logFailure(
+        "token_validation",
+        "Token has expired",
+        nullToUndefined(tokenRecord.user.email),
+        nullToUndefined(tokenRecord.user.id),
+        undefined,
+        { tokenId, expiresAt: tokenRecord.token.expiresAt }
+      );
       return {
         isValid: false,
         error: "Token has expired",
@@ -60,17 +95,43 @@ export async function validatePasswordResetToken(
       tokenRecord.token.tokenHash
     );
     if (!isValidToken) {
+      AuthLogger.logFailure(
+        "token_validation",
+        "Invalid token hash",
+        nullToUndefined(tokenRecord.user.email),
+        nullToUndefined(tokenRecord.user.id),
+        undefined,
+        { tokenId }
+      );
       return {
         isValid: false,
         error: "Invalid token",
       };
     }
 
+    AuthLogger.logSuccess(
+      "token_validation",
+      "Token validation successful",
+      nullToUndefined(tokenRecord.user.email),
+      nullToUndefined(tokenRecord.user.id),
+      undefined,
+      { tokenId }
+    );
     return {
       isValid: true,
       userId: tokenRecord.user.id,
     };
   } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    AuthLogger.logFailure(
+      "token_validation_error",
+      `Token validation failed: ${errorMessage}`,
+      undefined,
+      undefined,
+      undefined,
+      { tokenId }
+    );
     console.error("[Token Validation] Error:", error);
     return {
       isValid: false,
