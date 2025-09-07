@@ -1,6 +1,6 @@
 // sendMail.test.ts
 import nodemailer from "nodemailer";
-import { describe, expect, it, Mock, vi } from "vitest";
+import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
 vi.mock("nodemailer", () => {
   return {
@@ -19,6 +19,11 @@ describe("sendMail function", () => {
   const mockedCreateTransport = nodemailer.createTransport as Mock;
   const getMockedTransporter = () =>
     mockedCreateTransport.mock.results[0].value;
+
+  beforeEach(() => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "log").mockImplementation(() => {});
+  });
 
   it("should send mail successfully", async () => {
     const transporterMock = getMockedTransporter();
