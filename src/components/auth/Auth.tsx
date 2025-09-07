@@ -4,17 +4,17 @@ import { Button, ButtonVariants } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { ArrowLeftIcon, Loader2 } from "lucide-react";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { useToast } from "@/hooks/use-toast";
-import { useLogout } from "@/hooks/useLogout";
 import { useAuth } from "@/hooks/useAuth";
+import { useLogout } from "@/hooks/useLogout";
 import { useRequestPasswordReset } from "@/hooks/usePasswordReset";
-import Providers from "./oauth/Provider";
 import { LoginForm } from "./LoginForm";
-import { SignupForm } from "./SignupForm";
+import Providers from "./oauth/Provider";
 import { ResetPasswordForm } from "./ResetPasswordForm";
+import { SignupForm } from "./SignupForm";
 
 // Re-export NewPasswordForm for backward compatibility
 export { NewPasswordForm } from "./NewPasswordForm";
@@ -159,7 +159,8 @@ export const ChangePasswordBtn = ({
         onSuccess: () => {
           toast({
             title: "Password reset email sent",
-            description: "Please check your email for a link to reset your password.",
+            description:
+              "Please check your email for a link to reset your password.",
           });
         },
         onError: () => {
@@ -174,7 +175,11 @@ export const ChangePasswordBtn = ({
   };
 
   return (
-    <Button className="mt-3" onClick={onClick} disabled={requestPasswordReset.isPending}>
+    <Button
+      className="mt-3"
+      onClick={onClick}
+      disabled={requestPasswordReset.isPending}
+    >
       {requestPasswordReset.isPending ? (
         <Loader2 className="h-8 w-8 animate-spin text-slate-300" />
       ) : (

@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import WithRouteProtection from "@/components/auth/WithRouteProtection";
 import { getUserDetails } from "@/lib/auth/server.utils";
+import { redirect } from "next/navigation";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the dependencies
 vi.mock("next/navigation", () => ({
@@ -29,7 +29,6 @@ describe("WithRouteProtection", () => {
     vi.mocked(getUserDetails).mockResolvedValue(mockUser);
 
     const TestContent = () => <div>Protected Content</div>;
-    
     const component = await WithRouteProtection({
       children: <TestContent />,
     });

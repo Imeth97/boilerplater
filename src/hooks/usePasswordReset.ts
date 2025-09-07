@@ -1,5 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
 import { AuthResponse } from "@/lib/auth/typings/auth";
+import { useMutation } from "@tanstack/react-query";
 
 interface RequestResetData {
   email: string;
@@ -11,7 +11,9 @@ interface ResetPasswordData {
   token: string;
 }
 
-async function requestPasswordReset(data: RequestResetData): Promise<AuthResponse> {
+async function requestPasswordReset(
+  data: RequestResetData
+): Promise<AuthResponse> {
   const response = await fetch("/api/auth/password/request-reset", {
     method: "POST",
     headers: {

@@ -1,11 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { 
-  findExistingUserByEmail, 
-  isAccountAlreadyLinked, 
-  linkAccountToExistingUser,
-  handleAccountLinking 
+import {
+  findExistingUserByEmail,
+  handleAccountLinking,
+  isAccountAlreadyLinked,
 } from "@/lib/auth/account-linking";
 import type { Account, Profile } from "next-auth";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the database
 vi.mock("@/db/db", () => ({
@@ -17,7 +16,11 @@ vi.mock("@/db/db", () => ({
 
 vi.mock("@/db/schema", () => ({
   user: { id: "user.id", email: "user.email" },
-  account: { userId: "account.userId", provider: "account.provider", providerAccountId: "account.providerAccountId" },
+  account: {
+    userId: "account.userId",
+    provider: "account.provider",
+    providerAccountId: "account.providerAccountId",
+  },
 }));
 
 const mockDb = await import("@/db/db");
@@ -30,13 +33,13 @@ describe("Account Linking", () => {
   describe("findExistingUserByEmail", () => {
     it("should return user if found", async () => {
       const mockUser = { id: "user123", email: "test@example.com" };
-      
+
       mockDb.default.select = vi.fn().mockReturnValue({
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({
-            limit: vi.fn().mockResolvedValue([mockUser])
-          })
-        })
+            limit: vi.fn().mockResolvedValue([mockUser]),
+          }),
+        }),
       });
 
       const result = await findExistingUserByEmail("test@example.com");
@@ -47,9 +50,9 @@ describe("Account Linking", () => {
       mockDb.default.select = vi.fn().mockReturnValue({
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({
-            limit: vi.fn().mockResolvedValue([])
-          })
-        })
+            limit: vi.fn().mockResolvedValue([]),
+          }),
+        }),
       });
 
       const result = await findExistingUserByEmail("nonexistent@example.com");
@@ -62,9 +65,9 @@ describe("Account Linking", () => {
       mockDb.default.select = vi.fn().mockReturnValue({
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({
-            limit: vi.fn().mockResolvedValue([{ userId: "user123" }])
-          })
-        })
+            limit: vi.fn().mockResolvedValue([{ userId: "user123" }]),
+          }),
+        }),
       });
 
       const result = await isAccountAlreadyLinked("github", "github123");
@@ -75,9 +78,9 @@ describe("Account Linking", () => {
       mockDb.default.select = vi.fn().mockReturnValue({
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({
-            limit: vi.fn().mockResolvedValue([])
-          })
-        })
+            limit: vi.fn().mockResolvedValue([]),
+          }),
+        }),
       });
 
       const result = await isAccountAlreadyLinked("github", "github456");
@@ -90,9 +93,9 @@ describe("Account Linking", () => {
       mockDb.default.select = vi.fn().mockReturnValue({
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({
-            limit: vi.fn().mockResolvedValue([])
-          })
-        })
+            limit: vi.fn().mockResolvedValue([]),
+          }),
+        }),
       });
 
       const mockAccount: Account = {
@@ -112,21 +115,26 @@ describe("Account Linking", () => {
 
     it("should return success if user already has this provider (normal login)", async () => {
       // Mock finding existing user
-      mockDb.default.select = vi.fn()
+      mockDb.default.select = vi
+        .fn()
         .mockReturnValueOnce({
           from: vi.fn().mockReturnValue({
             where: vi.fn().mockReturnValue({
-              limit: vi.fn().mockResolvedValue([{ id: "user123", email: "test@example.com" }])
-            })
-          })
+              limit: vi
+                .fn()
+                .mockResolvedValue([
+                  { id: "user123", email: "test@example.com" },
+                ]),
+            }),
+          }),
         })
         // Mock checking if user has this provider (returns true)
         .mockReturnValueOnce({
           from: vi.fn().mockReturnValue({
             where: vi.fn().mockReturnValue({
-              limit: vi.fn().mockResolvedValue([{ userId: "user123" }])
-            })
-          })
+              limit: vi.fn().mockResolvedValue([{ userId: "user123" }]),
+            }),
+          }),
         });
 
       const mockAccount: Account = {

@@ -45,10 +45,10 @@ vi.mock("bcryptjs", () => ({
 
 import db from "@/db/db";
 import { passwordResetToken } from "@/db/schema";
-import { eq } from "drizzle-orm";
 import { sendMail } from "@/lib/email/sendEmail";
-import { randomBytes } from "crypto";
 import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
+import { eq } from "drizzle-orm";
 
 function createMockRequest(body: any) {
   return {
@@ -121,8 +121,7 @@ describe("POST /auth/password/request-reset route handler", () => {
           }),
         }),
       };
-      await callback(mockTx);
-      throw new Error("Failed to send email");
+      return await callback(mockTx);
     });
 
     (db.transaction as Mock).mockImplementationOnce(mockTransaction);
@@ -133,9 +132,9 @@ describe("POST /auth/password/request-reset route handler", () => {
 
     expect(response.status).toBe(500);
     const data = await response.json();
-    expect(data).toEqual({ 
-      success: false, 
-      error: "Failed to process reset request" 
+    expect(data).toEqual({
+      success: false,
+      error: "Failed to process reset request",
     });
   });
 
@@ -187,7 +186,9 @@ describe("POST /auth/password/request-reset route handler", () => {
         sendTo: "test@example.com",
         subject: "Reset your password",
         text: "Reset your password. Do not share this link with anyone.",
-        html: expect.stringContaining("http://localhost:3000/reset-password?tokenId=token123&token="),
+        html: expect.stringContaining(
+          "http://localhost:3000/reset-password?tokenId=token123&token="
+        ),
       })
     );
   });
