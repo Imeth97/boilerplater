@@ -12,7 +12,10 @@
     "reset-environment": "./scripts/reset-environment.sh",
     "create-greenmail-user": "./scripts/mail/create-greenmail-user.sh",
     "test:unit": "vitest test/unit --run",
-    "test:e2e": "dotenv -e .env -- vitest test/e2e --run"
+    "test:e2e": "dotenv -e .env -- vitest test/e2e --run",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.7.4",
@@ -58,8 +61,10 @@
     "drizzle-kit": "^0.28.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.11",
+    "husky": "^9.1.7",
     "jsdom": "^25.0.1",
     "postcss": "^8",
+    "prettier": "^3.6.2",
     "tailwindcss": "^3.4.1",
     "typescript": "^5",
     "vite-tsconfig-paths": "^5.1.4",
