@@ -1,6 +1,6 @@
 "use server";
-import nodemailer from "nodemailer";
 import { AuthLogger } from "@/lib/auth/logger";
+import nodemailer from "nodemailer";
 const SMTP_SERVER_HOST = process.env.SMTP_SERVER_HOST;
 const SMTP_SERVER_USERNAME = process.env.SMTP_SERVER_USERNAME;
 const SMTP_SERVER_PASSWORD = process.env.SMTP_SERVER_PASSWORD;
@@ -31,13 +31,28 @@ export async function sendMail({
   text: string;
   html?: string;
 }) {
-  AuthLogger.logAttempt("email_send", `Attempting to send email: ${subject}`, sendTo, undefined, undefined, { subject });
+  AuthLogger.logAttempt(
+    "email_send",
+    `Attempting to send email: ${subject}`,
+    sendTo,
+    undefined,
+    undefined,
+    { subject }
+  );
 
   try {
     await transporter.verify();
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "SMTP verification failed";
-    AuthLogger.logFailure("email_smtp_verify", `SMTP verification failed: ${errorMessage}`, sendTo, undefined, undefined, { subject, smtpUser: SMTP_SERVER_USERNAME });
+    const errorMessage =
+      error instanceof Error ? error.message : "SMTP verification failed";
+    AuthLogger.logFailure(
+      "email_smtp_verify",
+      `SMTP verification failed: ${errorMessage}`,
+      sendTo,
+      undefined,
+      undefined,
+      { subject, smtpUser: SMTP_SERVER_USERNAME }
+    );
     console.error("Something Went Wrong", SMTP_SERVER_USERNAME, error);
     return;
   }
@@ -50,15 +65,30 @@ export async function sendMail({
       text: text,
       html: html ? html : "",
     });
-    
-    AuthLogger.logSuccess("email_sent", `Email sent successfully: ${subject}`, sendTo, undefined, undefined, { subject, messageId: info.messageId });
+
+    AuthLogger.logSuccess(
+      "email_sent",
+      `Email sent successfully: ${subject}`,
+      sendTo,
+      undefined,
+      undefined,
+      { subject, messageId: info.messageId }
+    );
     console.log("Message Sent", info.messageId);
     console.log("Mail sent to", sendTo);
     return info;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Email send failed";
-    AuthLogger.logFailure("email_send_error", `Failed to send email: ${errorMessage}`, sendTo, undefined, undefined, { subject });
+    const errorMessage =
+      error instanceof Error ? error.message : "Email send failed";
+    AuthLogger.logFailure(
+      "email_send_error",
+      `Failed to send email: ${errorMessage}`,
+      sendTo,
+      undefined,
+      undefined,
+      { subject }
+    );
     console.error("Failed to send email:", error);
-    return;
+    throw error;
   }
 }
