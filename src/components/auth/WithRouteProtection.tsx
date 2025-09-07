@@ -21,7 +21,11 @@ export default async function WithRouteProtection({
   }
 
   // If email verification is required and user's email is not verified
-  if (requireEmailVerification && !userDetails.emailVerified && !userDetails.provider) {
+  if (
+    requireEmailVerification &&
+    !userDetails.emailVerified &&
+    !userDetails.provider
+  ) {
     return redirect(redirectTo);
   }
 

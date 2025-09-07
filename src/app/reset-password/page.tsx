@@ -38,9 +38,7 @@ const ResetPassword = async ({
           <h1 className="text-2xl font-bold text-gray-800">
             Invalid Reset Link
           </h1>
-          <p className="mt-2 text-gray-600">
-            {validation.error}
-          </p>
+          <p className="mt-2 text-gray-600">{validation.error}</p>
           <p className="mt-4 text-gray-600 underline hover:text-gray-800">
             <Link href="/">Go to home</Link>
           </p>

@@ -71,19 +71,19 @@ describe("POST /auth/password/reset route handler", () => {
 
     expect(response.status).toBe(400);
     const data = await response.json();
-    expect(data).toEqual({ 
-      success: false, 
-      error: "Password, tokenId, and token are required" 
+    expect(data).toEqual({
+      success: false,
+      error: "Password, tokenId, and token are required",
     });
   });
 
   it("returns 400 if password is invalid", async () => {
     (passwordSchema.safeParse as Mock).mockReturnValueOnce({ success: false });
 
-    const req = createMockRequest({ 
-      password: "weak", 
-      tokenId: "token123", 
-      token: "plaintoken" 
+    const req = createMockRequest({
+      password: "weak",
+      tokenId: "token123",
+      token: "plaintoken",
     });
     const response = (await POST(req)) as NextResponse;
 
@@ -100,17 +100,20 @@ describe("POST /auth/password/reset route handler", () => {
       error: "Token has expired",
     });
 
-    const req = createMockRequest({ 
-      password: "StrongPass123!", 
-      tokenId: "token123", 
-      token: "plaintoken" 
+    const req = createMockRequest({
+      password: "StrongPass123!",
+      tokenId: "token123",
+      token: "plaintoken",
     });
     const response = (await POST(req)) as NextResponse;
 
     expect(response.status).toBe(400);
     const data = await response.json();
     expect(data).toEqual({ success: false, error: "Token has expired" });
-    expect(validatePasswordResetToken).toHaveBeenCalledWith("token123", "plaintoken");
+    expect(validatePasswordResetToken).toHaveBeenCalledWith(
+      "token123",
+      "plaintoken"
+    );
   });
 
   it("successfully resets password and logs out user when logged in", async () => {
@@ -120,7 +123,9 @@ describe("POST /auth/password/reset route handler", () => {
       isValid: true,
       userId: mockUserId,
     });
-    (constructHashedPassword as Mock).mockResolvedValueOnce("hashedPassword123");
+    (constructHashedPassword as Mock).mockResolvedValueOnce(
+      "hashedPassword123"
+    );
     (auth as Mock).mockResolvedValueOnce({ id: "user123" });
     (Logout as Mock).mockResolvedValueOnce(undefined);
 
@@ -145,10 +150,10 @@ describe("POST /auth/password/reset route handler", () => {
 
     (db.transaction as Mock).mockImplementationOnce(mockTransaction);
 
-    const req = createMockRequest({ 
-      password: "StrongPass123!", 
-      tokenId: "token123", 
-      token: "plaintoken" 
+    const req = createMockRequest({
+      password: "StrongPass123!",
+      tokenId: "token123",
+      token: "plaintoken",
     });
     const response = (await POST(req)) as NextResponse;
 
@@ -170,7 +175,9 @@ describe("POST /auth/password/reset route handler", () => {
       isValid: true,
       userId: mockUserId,
     });
-    (constructHashedPassword as Mock).mockResolvedValueOnce("hashedPassword123");
+    (constructHashedPassword as Mock).mockResolvedValueOnce(
+      "hashedPassword123"
+    );
     (auth as Mock).mockResolvedValueOnce(null);
 
     const mockTx = {
@@ -194,10 +201,10 @@ describe("POST /auth/password/reset route handler", () => {
 
     (db.transaction as Mock).mockImplementationOnce(mockTransaction);
 
-    const req = createMockRequest({ 
-      password: "StrongPass123!", 
-      tokenId: "token123", 
-      token: "plaintoken" 
+    const req = createMockRequest({
+      password: "StrongPass123!",
+      tokenId: "token123",
+      token: "plaintoken",
     });
     const response = (await POST(req)) as NextResponse;
 
@@ -217,7 +224,9 @@ describe("POST /auth/password/reset route handler", () => {
       isValid: true,
       userId: mockUserId,
     });
-    (constructHashedPassword as Mock).mockResolvedValueOnce("hashedPassword123");
+    (constructHashedPassword as Mock).mockResolvedValueOnce(
+      "hashedPassword123"
+    );
     (auth as Mock).mockResolvedValueOnce(null);
 
     const mockTx = {
@@ -256,10 +265,10 @@ describe("POST /auth/password/reset route handler", () => {
 
     (db.transaction as Mock).mockImplementationOnce(mockTransaction);
 
-    const req = createMockRequest({ 
-      password: "StrongPass123!", 
-      tokenId: "token123", 
-      token: "plaintoken" 
+    const req = createMockRequest({
+      password: "StrongPass123!",
+      tokenId: "token123",
+      token: "plaintoken",
     });
     await POST(req);
 
@@ -273,7 +282,9 @@ describe("POST /auth/password/reset route handler", () => {
       isValid: true,
       userId: mockUserId,
     });
-    (constructHashedPassword as Mock).mockResolvedValueOnce("hashedPassword123");
+    (constructHashedPassword as Mock).mockResolvedValueOnce(
+      "hashedPassword123"
+    );
     (auth as Mock).mockResolvedValueOnce(null);
 
     const mockTx = {
@@ -312,10 +323,10 @@ describe("POST /auth/password/reset route handler", () => {
 
     (db.transaction as Mock).mockImplementationOnce(mockTransaction);
 
-    const req = createMockRequest({ 
-      password: "StrongPass123!", 
-      tokenId: "token123", 
-      token: "plaintoken" 
+    const req = createMockRequest({
+      password: "StrongPass123!",
+      tokenId: "token123",
+      token: "plaintoken",
     });
     await POST(req);
   });
@@ -327,13 +338,15 @@ describe("POST /auth/password/reset route handler", () => {
       userId: "user123",
     });
 
-    const mockTransaction = vi.fn().mockRejectedValueOnce(new Error("Database error"));
+    const mockTransaction = vi
+      .fn()
+      .mockRejectedValueOnce(new Error("Database error"));
     (db.transaction as Mock).mockImplementationOnce(mockTransaction);
 
-    const req = createMockRequest({ 
-      password: "StrongPass123!", 
-      tokenId: "token123", 
-      token: "plaintoken" 
+    const req = createMockRequest({
+      password: "StrongPass123!",
+      tokenId: "token123",
+      token: "plaintoken",
     });
     const response = (await POST(req)) as NextResponse;
 

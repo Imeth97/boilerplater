@@ -10,7 +10,7 @@ async function checkAuth(): Promise<{ authenticated: boolean }> {
 
 export function useAuth() {
   const queryClient = useQueryClient();
-  
+
   const { data: authData, isLoading } = useQuery({
     queryKey: ["auth"],
     queryFn: checkAuth,

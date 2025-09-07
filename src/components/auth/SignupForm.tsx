@@ -33,7 +33,7 @@ export function SignupForm({ onClose }: { onClose?: () => void }) {
   async function onSubmit(values: z.infer<typeof signupFormSchema>) {
     setError(false);
     setIsSigningUp(true);
-    
+
     signupMutation.mutate(
       {
         email: values.email,
@@ -74,13 +74,13 @@ export function SignupForm({ onClose }: { onClose?: () => void }) {
         {error && (
           <AuthErrorAlert message="There was an issue with your sign up. Please try again later" />
         )}
-        
+
         <NameFormField control={form.control} name="name" />
-        
+
         <EmailFormField control={form.control} name="email" />
-        
+
         <PasswordFormField control={form.control} name="password" />
-        
+
         <div className="flex flex-col mx-12">
           <LoadingButton
             isLoading={signupMutation.isPending || isSigningUp}

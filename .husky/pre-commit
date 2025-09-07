@@ -1,0 +1,5 @@
+echo "🎨 Running Prettier to format code..."
+yarn format
+git add -A
+
+echo "✅ Code formatted and staged successfully!"

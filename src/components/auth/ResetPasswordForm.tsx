@@ -28,7 +28,7 @@ export function ResetPasswordForm() {
   async function onSubmit(values: z.infer<typeof resetFormSchema>) {
     const { email } = values;
     setError(false);
-    
+
     try {
       await requestPasswordReset.mutateAsync({ email });
       setSuccess(true);
@@ -55,13 +55,13 @@ export function ResetPasswordForm() {
             showContactLink={false}
           />
         )}
-        
+
         <EmailFormField
           control={form.control}
           name="email"
           description="Enter a valid email we can send a reset link to"
         />
-        
+
         <div className="flex flex-col mx-12">
           <LoadingButton
             isLoading={requestPasswordReset.isPending}

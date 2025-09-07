@@ -4,7 +4,13 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { AlertTriangle } from "lucide-react";
 
 function ErrorContent() {
@@ -16,32 +22,38 @@ function ErrorContent() {
       case "OAuthAccountNotLinked":
         return {
           title: "Account Linking Issue",
-          description: "This email address is already associated with an account using a different sign-in method.",
-          suggestion: "Try signing in with your email and password, or use the same method you used to create your account."
+          description:
+            "This email address is already associated with an account using a different sign-in method.",
+          suggestion:
+            "Try signing in with your email and password, or use the same method you used to create your account.",
         };
       case "OAuthSignin":
         return {
           title: "OAuth Sign-In Error",
-          description: "There was a problem signing in with your OAuth provider.",
-          suggestion: "Please try again or contact support if the problem persists."
+          description:
+            "There was a problem signing in with your OAuth provider.",
+          suggestion:
+            "Please try again or contact support if the problem persists.",
         };
       case "OAuthCallback":
         return {
           title: "OAuth Callback Error",
           description: "There was an error processing the OAuth callback.",
-          suggestion: "Please try signing in again."
+          suggestion: "Please try signing in again.",
         };
       case "OAuthCreateAccount":
         return {
           title: "Account Creation Error",
-          description: "There was a problem creating your account with the OAuth provider.",
-          suggestion: "Please try again or use a different sign-in method."
+          description:
+            "There was a problem creating your account with the OAuth provider.",
+          suggestion: "Please try again or use a different sign-in method.",
         };
       default:
         return {
           title: "Authentication Error",
           description: "An unexpected error occurred during authentication.",
-          suggestion: "Please try again or contact support if the problem continues."
+          suggestion:
+            "Please try again or contact support if the problem continues.",
         };
     }
   };
@@ -84,11 +96,13 @@ function ErrorContent() {
 
 export default function AuthErrorPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div>Loading...</div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div>Loading...</div>
+        </div>
+      }
+    >
       <ErrorContent />
     </Suspense>
   );
