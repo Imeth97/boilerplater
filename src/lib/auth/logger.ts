@@ -11,7 +11,7 @@ export interface LogContext {
   status: "success" | "failure" | "attempt" | "warning";
   details?: string;
   error?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 function extractRequestContext(
@@ -95,7 +95,7 @@ export class AuthLogger {
     userEmail?: string,
     userId?: string,
     request?: NextRequest | Request,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ) {
     this.log(
       {
@@ -116,7 +116,7 @@ export class AuthLogger {
     userEmail?: string,
     userId?: string,
     request?: NextRequest | Request,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ) {
     this.log(
       {
@@ -137,7 +137,7 @@ export class AuthLogger {
     userEmail?: string,
     userId?: string,
     request?: NextRequest | Request,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ) {
     this.log(
       {
@@ -158,7 +158,7 @@ export class AuthLogger {
     userEmail?: string,
     userId?: string,
     request?: NextRequest | Request,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ) {
     this.log(
       {
