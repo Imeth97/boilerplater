@@ -1,19 +1,19 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
 import { useRequestPasswordReset } from "@/hooks/usePasswordReset";
 import { resetFormSchema } from "./utils/authSchemas";
 import {
-  EmailFormField,
   AuthErrorAlert,
-  AuthSuccessMessage,
-  LoadingButton,
   AuthFormContainer,
+  AuthSuccessMessage,
+  EmailFormField,
+  LoadingButton,
 } from "./utils/authUtils";
 
 export function ResetPasswordForm() {
@@ -28,7 +28,6 @@ export function ResetPasswordForm() {
   async function onSubmit(values: z.infer<typeof resetFormSchema>) {
     const { email } = values;
     setError(false);
-    
     try {
       await requestPasswordReset.mutateAsync({ email });
       setSuccess(true);
@@ -55,13 +54,11 @@ export function ResetPasswordForm() {
             showContactLink={false}
           />
         )}
-        
         <EmailFormField
           control={form.control}
           name="email"
           description="Enter a valid email we can send a reset link to"
         />
-        
         <div className="flex flex-col mx-12">
           <LoadingButton
             isLoading={requestPasswordReset.isPending}

@@ -1,22 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
-import { useSignup } from "@/hooks/useSignup";
 import { useAuth } from "@/hooks/useAuth";
+import { useSignup } from "@/hooks/useSignup";
 import { signupFormSchema } from "./utils/authSchemas";
 import {
+  AuthErrorAlert,
+  AuthFormContainer,
   EmailFormField,
+  LoadingButton,
   NameFormField,
   PasswordFormField,
-  AuthErrorAlert,
-  LoadingButton,
-  AuthFormContainer,
 } from "./utils/authUtils";
 
 export function SignupForm({ onClose }: { onClose?: () => void }) {
@@ -33,7 +33,6 @@ export function SignupForm({ onClose }: { onClose?: () => void }) {
   async function onSubmit(values: z.infer<typeof signupFormSchema>) {
     setError(false);
     setIsSigningUp(true);
-    
     signupMutation.mutate(
       {
         email: values.email,
@@ -74,13 +73,13 @@ export function SignupForm({ onClose }: { onClose?: () => void }) {
         {error && (
           <AuthErrorAlert message="There was an issue with your sign up. Please try again later" />
         )}
-        
+
         <NameFormField control={form.control} name="name" />
-        
+
         <EmailFormField control={form.control} name="email" />
-        
+
         <PasswordFormField control={form.control} name="password" />
-        
+
         <div className="flex flex-col mx-12">
           <LoadingButton
             isLoading={signupMutation.isPending || isSigningUp}
