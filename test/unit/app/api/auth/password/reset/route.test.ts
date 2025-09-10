@@ -4,9 +4,8 @@ import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
 vi.mock("@/db/db", () => ({
   __esModule: true,
-  default: {
-    transaction: vi.fn(),
-  },
+  default: {},
+  getDbTx: vi.fn(),
 }));
 
 vi.mock("@/db/schema", () => ({
@@ -45,7 +44,7 @@ vi.mock("@/lib/auth/token-validation", () => ({
   validatePasswordResetToken: vi.fn(),
 }));
 
-import db from "@/db/db";
+import { getDbTx } from "@/db/db";
 import { passwordResetToken, user } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { Logout } from "@/lib/auth/Logout";
@@ -137,7 +136,7 @@ describe("POST /auth/password/reset route handler", () => {
           }),
         }),
       }),
-      update: vi.fn().mockImplementation((table) => ({
+      update: vi.fn().mockImplementation((_table) => ({
         set: vi.fn().mockReturnValueOnce({
           where: vi.fn().mockResolvedValueOnce({}),
         }),
@@ -148,7 +147,9 @@ describe("POST /auth/password/reset route handler", () => {
       return await callback(mockTx);
     });
 
-    (db.transaction as Mock).mockImplementationOnce(mockTransaction);
+    (getDbTx as Mock).mockReturnValueOnce({
+      transaction: mockTransaction,
+    });
 
     const req = createMockRequest({
       password: "StrongPass123!",
@@ -188,7 +189,7 @@ describe("POST /auth/password/reset route handler", () => {
           }),
         }),
       }),
-      update: vi.fn().mockImplementation((table) => ({
+      update: vi.fn().mockImplementation((_table) => ({
         set: vi.fn().mockReturnValueOnce({
           where: vi.fn().mockResolvedValueOnce({}),
         }),
@@ -199,7 +200,9 @@ describe("POST /auth/password/reset route handler", () => {
       return await callback(mockTx);
     });
 
-    (db.transaction as Mock).mockImplementationOnce(mockTransaction);
+    (getDbTx as Mock).mockReturnValueOnce({
+      transaction: mockTransaction,
+    });
 
     const req = createMockRequest({
       password: "StrongPass123!",
@@ -263,7 +266,9 @@ describe("POST /auth/password/reset route handler", () => {
       return await callback(mockTx);
     });
 
-    (db.transaction as Mock).mockImplementationOnce(mockTransaction);
+    (getDbTx as Mock).mockReturnValueOnce({
+      transaction: mockTransaction,
+    });
 
     const req = createMockRequest({
       password: "StrongPass123!",
@@ -321,7 +326,9 @@ describe("POST /auth/password/reset route handler", () => {
       return await callback(mockTx);
     });
 
-    (db.transaction as Mock).mockImplementationOnce(mockTransaction);
+    (getDbTx as Mock).mockReturnValueOnce({
+      transaction: mockTransaction,
+    });
 
     const req = createMockRequest({
       password: "StrongPass123!",
@@ -341,7 +348,9 @@ describe("POST /auth/password/reset route handler", () => {
     const mockTransaction = vi
       .fn()
       .mockRejectedValueOnce(new Error("Database error"));
-    (db.transaction as Mock).mockImplementationOnce(mockTransaction);
+    (getDbTx as Mock).mockReturnValueOnce({
+      transaction: mockTransaction,
+    });
 
     const req = createMockRequest({
       password: "StrongPass123!",

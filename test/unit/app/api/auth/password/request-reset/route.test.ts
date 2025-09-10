@@ -8,6 +8,7 @@ vi.mock("@/db/db", () => ({
     select: vi.fn(),
     transaction: vi.fn(),
   },
+  getDbTx: vi.fn(),
 }));
 
 vi.mock("@/db/schema", () => ({
@@ -43,7 +44,7 @@ vi.mock("bcryptjs", () => ({
   },
 }));
 
-import db from "@/db/db";
+import db, { getDbTx } from "@/db/db";
 import { passwordResetToken } from "@/db/schema";
 import { sendMail } from "@/lib/email/sendEmail";
 import bcrypt from "bcryptjs";
@@ -108,23 +109,25 @@ describe("POST /auth/password/request-reset route handler", () => {
 
     (bcrypt.hash as Mock).mockResolvedValueOnce("hashedtoken123");
 
-    const mockTransaction = vi.fn().mockImplementation(async (callback) => {
-      const mockTx = {
-        update: vi.fn().mockReturnValueOnce({
-          set: vi.fn().mockReturnValueOnce({
-            where: vi.fn().mockResolvedValueOnce({}),
+    const mockTx = {
+      transaction: vi.fn().mockImplementation(async (callback) => {
+        const txMock = {
+          update: vi.fn().mockReturnValueOnce({
+            set: vi.fn().mockReturnValueOnce({
+              where: vi.fn().mockResolvedValueOnce({}),
+            }),
           }),
-        }),
-        insert: vi.fn().mockReturnValueOnce({
-          values: vi.fn().mockReturnValueOnce({
-            returning: vi.fn().mockResolvedValueOnce([{ id: "token123" }]),
+          insert: vi.fn().mockReturnValueOnce({
+            values: vi.fn().mockReturnValueOnce({
+              returning: vi.fn().mockResolvedValueOnce([{ id: "token123" }]),
+            }),
           }),
-        }),
-      };
-      return await callback(mockTx);
-    });
+        };
+        return await callback(txMock);
+      }),
+    };
 
-    (db.transaction as Mock).mockImplementationOnce(mockTransaction);
+    (getDbTx as Mock).mockResolvedValueOnce(mockTx);
     (sendMail as Mock).mockResolvedValueOnce(false);
 
     const req = createMockRequest({ email: "test@example.com" });
@@ -155,23 +158,25 @@ describe("POST /auth/password/request-reset route handler", () => {
 
     (bcrypt.hash as Mock).mockResolvedValueOnce("hashedtoken123");
 
-    const mockTransaction = vi.fn().mockImplementation(async (callback) => {
-      const mockTx = {
-        update: vi.fn().mockReturnValueOnce({
-          set: vi.fn().mockReturnValueOnce({
-            where: vi.fn().mockResolvedValueOnce({}),
+    const mockTx = {
+      transaction: vi.fn().mockImplementation(async (callback) => {
+        const txMock = {
+          update: vi.fn().mockReturnValueOnce({
+            set: vi.fn().mockReturnValueOnce({
+              where: vi.fn().mockResolvedValueOnce({}),
+            }),
           }),
-        }),
-        insert: vi.fn().mockReturnValueOnce({
-          values: vi.fn().mockReturnValueOnce({
-            returning: vi.fn().mockResolvedValueOnce([{ id: "token123" }]),
+          insert: vi.fn().mockReturnValueOnce({
+            values: vi.fn().mockReturnValueOnce({
+              returning: vi.fn().mockResolvedValueOnce([{ id: "token123" }]),
+            }),
           }),
-        }),
-      };
-      return await callback(mockTx);
-    });
+        };
+        return await callback(txMock);
+      }),
+    };
 
-    (db.transaction as Mock).mockImplementationOnce(mockTransaction);
+    (getDbTx as Mock).mockResolvedValueOnce(mockTx);
     (sendMail as Mock).mockResolvedValueOnce(true);
 
     const req = createMockRequest({ email: "test@example.com" });
@@ -223,11 +228,13 @@ describe("POST /auth/password/request-reset route handler", () => {
       }),
     };
 
-    const mockTransaction = vi.fn().mockImplementation(async (callback) => {
-      return await callback(mockTx);
-    });
+    const mockDbTx = {
+      transaction: vi.fn().mockImplementation(async (callback) => {
+        return await callback(mockTx);
+      }),
+    };
 
-    (db.transaction as Mock).mockImplementationOnce(mockTransaction);
+    (getDbTx as Mock).mockResolvedValueOnce(mockDbTx);
     (sendMail as Mock).mockResolvedValueOnce(true);
 
     const req = createMockRequest({ email: "test@example.com" });

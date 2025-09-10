@@ -2,12 +2,16 @@
 
 # THIS BRANCH CONTAINS THE CHANGES TO DEPLOY TO VERCEL WITH NEON AS THE DATABASE.
 
-The only changes needed are:
+The changes needed for this deployment are:
 
-1. Install the @neondatabase/serverless package
-2. Change the db client to neon. See src/db/db.ts & copy this file as needed.
-3. Add the correct db URLs to your .env file in your production environment (+ locally if you want to connect to the db from your local env).
-   See more information here: [Drizzle-Neon integration](https://orm.drizzle.team/docs/tutorials/drizzle-with-neon)
+1. Install the @neondatabase/serverless package  
+2. Change the db client to neon. See src/db/db.ts & copy this file as needed.  
+3. Add the correct db URLs to your .env file in your production environment (+ locally if you want to connect to the db from your local env).  
+   See more information here: [Drizzle-Neon integration](https://orm.drizzle.team/docs/tutorials/drizzle-with-neon)  
+4. This branch defines two clients in `db.ts`:  
+   - **db** – Neon HTTP client (fast, stateless, Edge-friendly; use for normal queries).  
+   - **dbTx** – Neon WebSocket client (Node.js runtime only; use for routes needing `transaction()`, e.g. password reset).
+
 
 Note: e2e tests are disabled in CI for this branch due to the setup needing the neon client
 

@@ -1,4 +1,6 @@
-import db from "@/db/db";
+export const runtime = "nodejs";
+
+import { getDbTx } from "@/db/db";
 import { passwordResetToken, user } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { AuthLogger } from "@/lib/auth/logger";
@@ -72,7 +74,9 @@ export async function POST(request: NextRequest) {
     // Hash the new password
     const hashedPassword = await constructHashedPassword(password);
 
-    const result = await db.transaction(async (tx) => {
+    const dbTx = await getDbTx();
+
+    const result = await dbTx.transaction(async (tx) => {
       // Get user's current reset nonce for increment
       const userData = await tx
         .select({ resetNonce: user.resetNonce })

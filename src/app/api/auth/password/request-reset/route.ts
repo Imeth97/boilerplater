@@ -1,4 +1,6 @@
-import db from "@/db/db";
+export const runtime = "nodejs";
+
+import db, { getDbTx } from "@/db/db";
 import { passwordResetToken, user } from "@/db/schema";
 import { AuthLogger } from "@/lib/auth/logger";
 import { sendMail } from "@/lib/email/sendEmail";
@@ -58,7 +60,9 @@ export async function POST(request: NextRequest) {
     const plainToken = randomBytes(32).toString("hex");
     const tokenHash = await bcrypt.hash(plainToken, 10);
 
-    const newToken = await db.transaction(async (tx) => {
+    const dbTx = await getDbTx();
+
+    const newToken = await dbTx.transaction(async (tx) => {
       // Invalidate any existing unused tokens for this user
       await tx
         .update(passwordResetToken)
