@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import db, { getDbTx } from "@/db/db";
 import { passwordResetToken, user } from "@/db/schema";
 import { AuthLogger } from "@/lib/auth/logger";
