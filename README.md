@@ -40,7 +40,10 @@ See below for more details + how to clone and run the boilerplate.
 
 - **Testing**
 
-  - Unit testing with Vitest. [Vitest](https://vitest.dev/)
+  - Unit & Integration testing with Vitest. [Vitest](https://vitest.dev/)
+
+- **CI**
+  - CI pipeline with github actions. Runs the unit and e2e integration tests.
 
 ## Getting Started
 
@@ -67,6 +70,17 @@ See below for more details + how to clone and run the boilerplate.
    ```
    This will generate the required .env file and start both the local database and the development server.
    See localhost:3000 in your browser.
+   
+   A locally running Greenmail smtp container will also be spawned. After invoking the signup flow (with e.g. test@localhost.com) you can run 
+   ```
+   scripts/mail/extract-signup-link.sh test@localhost.com X 
+   ```
+   To get the sign up link to invoke email confirmation. 
+
+### Deployments 
+
+Checkout the release/vercel-neon to see a production deployment of this boilerplate using vercel for hosting and neon for the postgres provider. 
+Diff that branch with main to see what changes were required for deployment. 
 
 **ENVs - a script is provided to generate the env file:**
 However, you can also create the .env file manually at the root of the project with the following:
