@@ -40,7 +40,10 @@ See below for more details + how to clone and run the boilerplate.
 
 - **Testing**
 
-  - Unit testing with Vitest. [Vitest](https://vitest.dev/)
+  - Unit & Integration testing with Vitest. [Vitest](https://vitest.dev/)
+
+- **CI**
+  - CI pipeline with github actions. Runs the unit and e2e integration tests.
 
 ## Getting Started
 
