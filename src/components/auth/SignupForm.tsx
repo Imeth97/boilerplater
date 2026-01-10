@@ -1,22 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
-import { useSignup } from "@/hooks/useSignup";
 import { useAuth } from "@/hooks/useAuth";
+import { useSignup } from "@/hooks/useSignup";
 import { signupFormSchema } from "./utils/authSchemas";
 import {
+  AuthErrorAlert,
+  AuthFormContainer,
   EmailFormField,
+  LoadingButton,
   NameFormField,
   PasswordFormField,
-  AuthErrorAlert,
-  LoadingButton,
-  AuthFormContainer,
 } from "./utils/authUtils";
 
 export function SignupForm({ onClose }: { onClose?: () => void }) {

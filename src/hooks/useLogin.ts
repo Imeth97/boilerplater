@@ -1,5 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
 import { AuthResponse } from "@/lib/auth/typings/auth";
+import { useMutation } from "@tanstack/react-query";
 
 interface LoginData {
   email: string;

@@ -1,11 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   findExistingUserByEmail,
-  isAccountAlreadyLinked,
-  linkAccountToExistingUser,
   handleAccountLinking,
+  isAccountAlreadyLinked,
 } from "@/lib/auth/account-linking";
 import type { Account, Profile } from "next-auth";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the database
 vi.mock("@/db/db", () => ({

@@ -1,6 +1,6 @@
 import { signOut } from "@/lib/auth";
-import { AuthResponse } from "@/lib/auth/typings/auth";
 import { AuthLogger } from "@/lib/auth/logger";
+import { AuthResponse } from "@/lib/auth/typings/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {

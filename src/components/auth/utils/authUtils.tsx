@@ -1,7 +1,5 @@
-import React from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormDescription,
@@ -14,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import PasswordInputField from "@/components/ui/passwordInput";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import React from "react";
 import { Control, FieldPath, FieldValues } from "react-hook-form";
 
 interface EmailFormFieldProps<T extends FieldValues> {
