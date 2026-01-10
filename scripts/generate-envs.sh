@@ -29,27 +29,12 @@ NEXT_DATABASE_URL=$NEXT_DATABASE_URL
 AUTH_DRIZZLE_URL=$AUTH_DRIZZLE_URL
 EOL
 
-# Notify user about additional credentials needed
-cat <<EOL
-
-The .env file has been generated with initial values. You also need to set up email credentials for the SMTP server.
-
-Skip this step if you do not care about email sending for now.
-
-Please note that depending on your email provider, the configuration might be different.
-Please see src/components/email/sendEmail.ts to customize the email sending process.
-
-Please provide the following details:
-EOL
-
-# Prompt user for SMTP credentials
-read -p "SMTP_SERVER_HOST (e.g., smtp.gmail.com): " SMTP_SERVER_HOST
-read -p "SMTP_SERVER_USERNAME: " SMTP_SERVER_USERNAME
-read -sp "SMTP_SERVER_PASSWORD: " SMTP_SERVER_PASSWORD
-printf "\n"
-read -p "SMTP_SERVER_PORT (default 587): " SMTP_SERVER_PORT
-SMTP_SERVER_PORT=${SMTP_SERVER_PORT:-587}
-read -p "SMTP_SERVICE (e.g., gmail): " SMTP_SERVICE
+# Set default local greenmail SMTP values
+SMTP_SERVER_HOST="localhost"
+SMTP_SERVER_USERNAME="test@localhost.com"
+SMTP_SERVER_PASSWORD=""
+SMTP_SERVER_PORT="3025"
+SMTP_SERVICE=""
 
 # Append SMTP values to .env
 cat <<EOL >> .env
@@ -61,4 +46,4 @@ SMTP_SERVICE=$SMTP_SERVICE
 EOL
 
 # Confirmation message
-echo ".env file has been successfully created and updated with SMTP credentials."
+echo ".env file has been successfully created with local greenmail SMTP configuration."
