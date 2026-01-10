@@ -7,10 +7,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/useAuth";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { useAuth } from "@/hooks/useAuth";
 import { LoginBtn, SignOutBtn } from "../auth/Auth";
 
 const Navbar: React.FC = () => {
