@@ -6,7 +6,6 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
-import { randomUUID } from "crypto";
 
 import type { AdapterAccountType } from "next-auth/adapters";
 
