@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import WithRouteProtection from "@/components/auth/WithRouteProtection";
 import { getUserDetails } from "@/lib/auth/server.utils";
+import { redirect } from "next/navigation";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the dependencies
 vi.mock("next/navigation", () => ({

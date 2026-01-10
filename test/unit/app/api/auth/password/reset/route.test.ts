@@ -46,13 +46,13 @@ vi.mock("@/lib/auth/token-validation", () => ({
 }));
 
 import db from "@/db/db";
-import { user, passwordResetToken } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { passwordSchema } from "@/lib/auth/shared.utils";
-import { constructHashedPassword } from "@/lib/auth/server.utils";
+import { passwordResetToken, user } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { Logout } from "@/lib/auth/Logout";
+import { constructHashedPassword } from "@/lib/auth/server.utils";
+import { passwordSchema } from "@/lib/auth/shared.utils";
 import { validatePasswordResetToken } from "@/lib/auth/token-validation";
+import { eq } from "drizzle-orm";
 
 function createMockRequest(body: any) {
   return {

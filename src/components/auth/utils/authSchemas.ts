@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { passwordSchema } from "@/lib/auth/shared.utils";
+import { z } from "zod";
 
 export const loginFormSchema = z.object({
   email: z.string().email({

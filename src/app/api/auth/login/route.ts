@@ -1,8 +1,8 @@
 import db from "@/db/db";
 import { account, user } from "@/db/schema";
 import { signIn } from "@/lib/auth";
-import { AuthResponse } from "@/lib/auth/typings/auth";
 import { AuthLogger } from "@/lib/auth/logger";
+import { AuthResponse } from "@/lib/auth/typings/auth";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
